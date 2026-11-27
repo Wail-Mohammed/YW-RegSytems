@@ -12,8 +12,8 @@ Before recording
    to docs/submission.json and the README; regenerate the PDF report.
 
 0:00–0:25 — Purpose and design
-“This is Campus Register, our college course registration application. Node.js
-and Express serve the interface and API, and the data is stored in local MySQL.
+“This is Campus Register, our college course registration application. Angular
+provides the interface; Express serves the API, and local MySQL stores the data.
 Our design separates catalog courses from term-specific sections and connects
 students and sections through registrations.”
 
@@ -39,7 +39,8 @@ Refresh and show that the modified record remains saved.
 Show a successful enrollment into a section with seats and no prerequisites.
 Show a full section and the waitlist. Explain that a transaction checks capacity,
 active holds, and completed prerequisite courses before allocating a seat.
-If time allows, release a seat and promote the first eligible waiting student.
+If time allows, release a seat and promote the first queued student after the
+system rechecks eligibility.
 
 3:45–4:30 — GROUP BY summary report
 Open Reports and filter the term. Show the grouped enrollment summary.

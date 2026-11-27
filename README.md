@@ -4,7 +4,7 @@
 
 A local college course-registration web application based on our database-class SRS, ER design, and relational schema. The frontend uses **Angular 22 and TypeScript 6**; the backend uses **Node.js and Express**, with **local MySQL** for persistence and SQL processing.
 
-[Teammate handoff](docs/TEAM_HANDOFF.md) · [Original project requirements](docs/PROJECT_REQUIREMENTS.md) · [Requirement mapping](docs/REQUIREMENT_TRACEABILITY.md) · [Clarified relationships](docs/RELATIONSHIPS.md) · [Report](report.pdf)
+[Report](report.pdf) · [Updated ER diagram](docs/er-diagram.svg) · [Relationship constraints](docs/RELATIONSHIPS.md) · [SQL examples](docs/feature-queries.sql)
 
 ![Angular course-registration workspace](docs/screenshots/sections-desktop.png)
 
@@ -67,12 +67,12 @@ Repository.js             SQL queries, enrollment rules, and transactions
 DAO.js                    mysql2 pool, UTC sessions, and transaction handling
 validation.js             Backend input validation
 sql/                      Schema, seed, integrity notes, and optional migration
-docs/                     ER sources, report data, screenshots, and handoff guide
+docs/                     ER sources, SQL examples, report data, and verification
 test/                     Backend-validation and real MySQL integration tests
 scripts/                  Setup, browser checks, build/report helpers
 ```
 
-Angular is used for the actual interface, not just included as a library: standalone components render the screens, typed `HttpClient` requests call the API, signals update the view, and reactive forms manage field validation and status-dependent grade controls. Express remains the JavaScript backend; this version does not use Java, Play, or Spring Boot. See [the framework explanation](docs/FRAMEWORK_AND_MOBILE.md).
+Angular standalone components render the screens, typed `HttpClient` requests call the API, signals update the view, and reactive forms manage field validation and status-dependent grade controls. Express handles the API and serves the compiled interface. The report explains this framework role for the optional framework criterion.
 
 For frontend development, run `npm run start:api` in one terminal and `npm run frontend:dev` in another. Angular's development server proxies `/api` to Express on port 3000. The standard submission startup remains `npm start` on port 3000.
 
@@ -112,15 +112,16 @@ npm run report
 
 The report generator needs Python 3 and Chrome. It reads the team metadata and actual verification records, rebuilds the diagram and PDF, and updates the README demo link when provided. It generates `report.pdf` while the team ID is unknown and `team<ID>.pdf` once one is supplied. The report marks missing submission details explicitly.
 
-Use [DEMO_SCRIPT.txt](docs/DEMO_SCRIPT.txt) to prepare the recording. Physical-phone testing is still required before claiming the optional mobile bonus. The report explains the Angular framework role; extra-credit awards remain the instructor's decision.
+Use [DEMO_SCRIPT.txt](docs/DEMO_SCRIPT.txt) to prepare the recording. Physical-phone testing is still required before claiming the optional mobile bonus. Record the iPhone/Android model and browser, demonstrate the required features, and update `docs/verification.json` with the observed results.
+
+For a phone demonstration on a trusted local network, set `HOST=0.0.0.0` in `.env`, restart, and open the computer's local-network address and app port on the phone. The phone's own localhost does not reach the computer. Restore loopback afterward; this app assumes an authorized local registrar.
 
 ## Sources and credits
 
-- Wail Mohammed and Yesenia Ruiz, prior *College Course Registration System SRS, ER Design, and Database Schema*; original requirements reproduced in `docs/PROJECT_REQUIREMENTS.md`.
+- Wail Mohammed and Yesenia Ruiz, prior *College Course Registration System SRS, ER Design, and Database Schema*.
 - Instructor Tian Zhou, `Web_App_Assignment.pdf` and the `TodoMySQL` sample: Express/DAO/repository organization. Angular sources replace the sample's plain public-folder client; the backend pattern remains.
-- [Implementation notes](docs/IMPLEMENTATION_NOTES.md) document the class design, clarified relationships, schema refinements, and application layers.
 - [Angular documentation](https://angular.dev/overview), [version compatibility](https://angular.dev/reference/versions), [reactive forms](https://angular.dev/guide/forms/reactive-forms), [HttpClient](https://angular.dev/guide/http).
 - [Node.js](https://nodejs.org/en/docs), [Express](https://expressjs.com/), [mysql2 prepared statements](https://sidorares.github.io/node-mysql2/docs/examples/queries/prepared-statements), [MySQL constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html).
 - Codex/ChatGPT assistance was used to implement, document, and test the application. The team should review the code, understand the SQL, and verify the final submission before presenting it.
 
-The earlier tested plain-JavaScript frontend is preserved in Git history under `baseline-vanilla-frontend`. The current application uses Angular. Generated builds, dependencies, `.env`, local MySQL data, and logs are excluded from Git.
+Generated builds, dependencies, `.env`, local MySQL data, and logs are excluded from Git.

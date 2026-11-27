@@ -104,8 +104,8 @@ pages.append({'title':'Design decisions and application architecture','blocks':[
  b('body','Angular forms call the Express API in index.js through an injected, typed HttpClient service. Repository.js contains SQL and transaction workflows. DAO.js manages mysql2 connections and transactions. Backend validation rejects invalid values; parameter bindings separate values from SQL syntax; MySQL constraints enforce keys and local row rules. The interface displays feedback and reloads saved data.'),
  b('h','Framework role'),
  b('body','Angular standalone components render the seven views and shared dialogs. Signals manage view state; reactive forms validate fields and enable final grades only for COMPLETED registrations. TypeScript models describe API responses. Express serves the Angular build and routes API requests. This conversion preserves the ten-table schema and backend SQL. Framework use is optional; extra-credit eligibility is the instructor’s decision.'),
- b('h','Implementation and team handoff'),
- b('body','See docs/IMPLEMENTATION_NOTES.md for design decisions and docs/TEAM_HANDOFF.md for setup and collaboration. The source, SQL, diagram sources, tests, and report are published at https://github.com/Wail-Mohammed/YW-RegSytems. The earlier plain-JavaScript frontend is preserved under the baseline-vanilla-frontend tag.')
+ b('h','Source organization and setup'),
+ b('body','README.md explains prerequisites, configuration, setup, startup, and verification. client/src contains the Angular interface; SQL definitions and sample records are in sql/. Editable ER sources and representative SQL queries are in docs/. The source, tests, and report are published at https://github.com/Wail-Mohammed/YW-RegSytems.')
 ]})
 pages.append({'title':'Testing and observed limitations','verification':True})
 pages.append({'title':'Reproduction and references','blocks':[

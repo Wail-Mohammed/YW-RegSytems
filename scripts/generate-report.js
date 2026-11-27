@@ -56,9 +56,6 @@ async function main(){
     await browser.navigate(pathToFileURL(htmlPath).href);
     const pdf=await browser.send('Page.printToPDF',{printBackground:true,preferCSSPageSize:true,displayHeaderFooter:false});
     fs.writeFileSync(file,Buffer.from(pdf.data,'base64'));
-    await browser.send('Emulation.setDeviceMetricsOverride',{width:1660,height:1030,deviceScaleFactor:1,mobile:false});
-    await browser.navigate(pathToFileURL(path.join(root,'docs/er-diagram.svg')).href);
-    await browser.screenshot(path.join(root,'docs/er-diagram.png'));
   }finally{await browser.close();}
   console.log('Generated '+file);
   if(pending.length)console.log('Pending submission metadata: '+pending.join(', '));

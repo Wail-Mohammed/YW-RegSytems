@@ -1,5 +1,5 @@
 from pathlib import Path
-import html,json,math
+import html,math
 root=Path(__file__).resolve().parents[1];docs=root/'docs'
 nodes=[
  {'name':'departments','x':40,'y':100,'w':250,'fields':['PK department_id','UQ name']},
@@ -31,8 +31,6 @@ edges=[
 relationships=[]
 for parent,child,points,label,lx,ly in edges:
  relationships.append({'parent':parent,'child':child,'points':points,'label':label,'lx':lx,'ly':ly,'startCardinality':'1','endCardinality':'0..N'})
-diagram={'width':1660,'height':1030,'nodes':nodes,'edges':relationships}
-(docs/'er-diagram.json').write_text(json.dumps(diagram,indent=2))
 svg=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1660 1030" role="img" aria-labelledby="title desc">',
  '<title id="title">College Course Registration: clarified ER relationship constraints</title>',
  '<desc id="desc">Crow\'s Foot notation. Every child belongs to exactly one parent; each parent may have zero or many children. Two separately labeled roles resolve the recursive course prerequisite relationship.</desc>',
@@ -66,4 +64,4 @@ svg.extend(['<text x="40" y="950" font-size="19" font-weight="bold">Read both en
 p=docs/'er-diagram.mmd';s=p.read_text();needle='        varchar email UK\n    }\n    instructors'
 if needle in s:s=s.replace(needle,'        varchar email UK\n        varchar major "optional; one free-text value"\n    }\n    instructors')
 p.write_text(s)
-print('Updated ER JSON, SVG, and Mermaid source.')
+print('Updated ER SVG and Mermaid source.')

@@ -385,11 +385,11 @@
         },
         {
           "kind": "h",
-          "text": "Implementation and team handoff"
+          "text": "Source organization and setup"
         },
         {
           "kind": "body",
-          "text": "See docs/IMPLEMENTATION_NOTES.md for design decisions and docs/TEAM_HANDOFF.md for setup and collaboration. The source, SQL, diagram sources, tests, and report are published at https://github.com/Wail-Mohammed/YW-RegSytems. The earlier plain-JavaScript frontend is preserved under the baseline-vanilla-frontend tag."
+          "text": "README.md explains prerequisites, configuration, setup, startup, and verification. client/src contains the Angular interface; SQL definitions and sample records are in sql/. Editable ER sources and representative SQL queries are in docs/. The source, tests, and report are published at https://github.com/Wail-Mohammed/YW-RegSytems."
         }
       ]
     },
