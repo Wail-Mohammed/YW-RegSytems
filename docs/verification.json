@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "date": "2026-11-27T04:04:59.557673+00:00",
+  "operatingSystem": "macOS 26.7 (Apple Silicon)",
+  "browser": "Chrome/158.0.8127.38 (headless; actual Chrome browser engine)",
+  "database": "Local MySQL Community Server 26.7.0, InnoDB, separate loopback instance on port 3307",
+  "node": "v18.14.2",
+  "commands": [
+    "npm ci --ignore-scripts --no-audit --no-fund",
+    "npm run local:setup",
+    "npm test",
+    "npm run test:integration",
+    "npm run test:browser",
+    "npm run check"
+  ],
+  "results": [
+    "7 validation scenarios passed: names/email/major, missing and invalid inputs, ID types, course credits and lengths, grade-status consistency, search validation.",
+    "12 MySQL integration scenarios passed in a disposable database: ten-table schema and seed, UTC session/API timestamps, SQL filters and JOINs, INSERT/UPDATE of students and courses, direct SQL persistence from a fresh connection, invalid/duplicate/FK errors, database constraints, holds/prerequisites, simultaneous last-seat requests, prerequisite cycles, FIFO promotion/rollback/removal, capacity/reactivation, GROUP BY/dashboard consistency, and non-destructive repeat setup.",
+    "9 actual Chrome browser checks passed: forms/search/roster, student and course INSERT/UPDATE, major persistence after reload, required input/Cancel, visible duplicate-key feedback, all views and summary report, refresh-failure feedback, and a 390px viewport.",
+    "JavaScript syntax checks passed for server, DAO, repository, validation, configuration, frontend and setup/browser/report scripts.",
+    "Screenshots saved in docs/screenshots. All test databases use their own unique names; the 118-registration demonstration seed is retained."
+  ],
+  "limitations": [
+    "No physical iPhone or Android was tested. The 390px browser viewport is emulation only, and no mobile-device extra credit is claimed.",
+    "The app assumes an authorized local registrar and does not implement production authentication or an action-by-action audit log.",
+    "The database-class team ID and viewable demo-video URL have not been supplied. Record/upload a video no longer than seven minutes, supply the team ID, and regenerate the report with the required filename.",
+    "The RISE-EDU source was supplied as a ZIP, not a connected Git checkout. No live GitHub repository was changed."
+  ]
+}

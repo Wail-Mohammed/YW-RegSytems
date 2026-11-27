@@ -1,0 +1,121 @@
+from pathlib import Path
+import json
+root=Path(__file__).resolve().parents[1]
+def b(kind,text):return {'kind':kind,'text':text}
+pages=[]
+pages.append({'title':'Campus Register','subtitle':'College Course Registration — Enterprise Database Web Application','blocks':[
+ b('body','Wail Mohammed and Yesenia Ruiz\nInstructor: Tian Zhou'),
+ b('h','Application summary'),
+ b('body','Campus Register implements the college course-registration database from our previous SRS and ER assignment. A registrar uses a browser to search course sections, maintain students and courses, enroll students, update registration statuses and grades, manage holds and waitlists, and review rosters, schedules, and enrollment totals. Node.js and Express handle requests; MySQL stores the records; HTML, CSS, and JavaScript provide the interface.'),
+ b('h','Connection to our earlier design'),
+ b('body','The same ten relations remain: department, student, instructor, term, course, section, registration, course prerequisite, waitlist entry, and student hold. The implementation keeps catalog courses separate from term-specific sections and uses association tables for registrations, prerequisites, and queues. It implements the stated meanings of seat occupancy, passing grades, active holds, and latest registration status.'),
+ b('h','Implementation refinements'),
+ b('body','1. Table and attribute names use consistent plural snake_case. Department.department_name becomes departments.name; term_name/academic_year become terms.name/year; max_capacity becomes sections.capacity; registration_status becomes registrations.status; prerequisite_course_id becomes prerequisite_id. These are naming changes rather than changes to relationships.'),
+ b('body','2. courses.course_code is a new unique, readable catalog identifier, such as CS 101. The numeric course_id remains the key used by other tables.'),
+ b('body','3. registrations adds registration_id as its primary key for selecting one record in an edit form. UNIQUE(student_id, section_id) preserves the original composite candidate key, so a student still has at most one registration per section.'),
+ b('body','4. students.major preserves the optional major from the earlier design. It is one free-text value, with NULL representing an undeclared major; the SRS does not define a department relationship for it. The implementation does not impose a maximum waitlist size because the numbered requirements do not define a bound. Section capacity still controls seats; waitlist positions are derived from joining time and student ID.'),
+ b('h','Scope'),
+ b('body','This is a local registrar demonstration rather than a public student portal. It has no production login or role system and retains the latest registration status rather than a full action audit log. We do not claim physical-phone testing unless it is recorded in the testing results.')
+]})
+pages.append({'title':'Updated ER diagram','diagram':True})
+pages.append({'title':'Relationships and cardinalities','blocks':[
+ b('body','Every foreign key below is NOT NULL. Each child row therefore references exactly one parent (1..1, total participation). Each parent may have zero or many child rows (0..N, partial participation). A foreign key does not require the parent to have any children. Both roles of the course prerequisite relationship are shown separately.'),
+ b('schema','departments ↔ instructors\nOne department employs 0..N instructors; each instructor belongs to exactly 1 department.'),
+ b('schema','departments ↔ courses\nOne department contains 0..N courses; each course belongs to exactly 1 department.'),
+ b('schema','instructors ↔ sections\nOne instructor teaches 0..N sections; each section has exactly 1 instructor.'),
+ b('schema','terms ↔ sections\nOne term schedules 0..N sections; each section occurs in exactly 1 term.'),
+ b('schema','courses ↔ sections\nOne course has 0..N sections; each section offers exactly 1 course.'),
+ b('schema','students ↔ registrations\nOne student has 0..N registrations; each registration belongs to exactly 1 student.'),
+ b('schema','sections ↔ registrations\nOne section has 0..N registrations; each registration belongs to exactly 1 section.'),
+ b('schema','students ↔ waitlist_entries\nOne student has 0..N waitlist entries; each waitlist entry belongs to exactly 1 student.'),
+ b('schema','sections ↔ waitlist_entries\nOne section has 0..N waitlist entries; each waitlist entry belongs to exactly 1 section.'),
+ b('schema','students ↔ student_holds\nOne student has 0..N holds; each hold belongs to exactly 1 student.'),
+ b('schema','courses ↔ course_prerequisites (course_id role)\nOne course has 0..N prerequisite links; each link identifies exactly 1 dependent course.'),
+ b('schema','courses ↔ course_prerequisites (prerequisite_id role)\nOne course is the prerequisite in 0..N links; each link identifies exactly 1 prerequisite course.'),
+ b('body','Consequently students and sections have an M:N relationship resolved by registrations, and separately by waitlist_entries. Courses have a recursive M:N prerequisite relationship resolved by course_prerequisites. Unique student–section pairs prevent duplicates. The free-text major is not a relationship or foreign key.')
+]})
+pages.append({'title':'Relational schema and integrity','blocks':[
+ b('small','PK = primary key; UQ = alternate unique key; FK = foreign key. “?” means nullable. The executable definition, including types and index names, is sql/schema.sql.'),
+ b('schema','departments(department_id PK, name UQ)'),
+ b('schema','students(student_id PK, first_name, last_name, email UQ, major?)'),
+ b('schema','instructors(instructor_id PK, department_id FK→departments, first_name, last_name, email UQ)'),
+ b('schema','terms(term_id PK, name, year, start_date, end_date)\nUQ(name, year)'),
+ b('schema','courses(course_id PK, department_id FK→departments, course_code UQ, title, credits)'),
+ b('schema','sections(section_id PK, course_id FK→courses, instructor_id FK→instructors, term_id FK→terms, section_number, meeting_time, location, capacity)\nUQ(course_id, term_id, section_number)'),
+ b('schema','registrations(registration_id PK, student_id FK→students, section_id FK→sections, registered_at, status, final_grade?)\nUQ(student_id, section_id)'),
+ b('schema','course_prerequisites(course_id PK/FK→courses, prerequisite_id PK/FK→courses)\nComposite PK(course_id, prerequisite_id)'),
+ b('schema','waitlist_entries(student_id PK/FK→students, section_id PK/FK→sections, joined_at)\nComposite PK(student_id, section_id)'),
+ b('schema','student_holds(hold_id PK, student_id FK→students, reason, placed_at, cleared_at?)'),
+ b('h','Constraints in MySQL'),
+ b('body','All primary keys are non-null. Every association references an existing parent, and foreign keys use RESTRICT for updates and deletes. Required text cannot be blank. Unique constraints cover department names, emails within each person table, course codes, term name/year, section identity, and registration pairs. Credits are 1–6; section capacity is positive; term years are 1900–9999; dates are ordered.'),
+ b('body','Registration statuses are ENROLLED, COMPLETED, DROPPED, and WITHDRAWN. A COMPLETED registration must have an allowed final grade; all other statuses require NULL. Hold clearing cannot precede placement. A prerequisite cannot point to its own course. Cross-row rules are handled transactionally as described later.')
+]})
+pages.append({'title':'Functional dependencies and 3NF','blocks':[
+ b('body','Under our stated domain rules, each determinant below is a candidate key. Names of people may repeat; person email is unique within its own relation. Attributes are single values, and no association stores copied course, department, or student descriptions.'),
+ b('schema','departments: department_id → name; name → department_id.'),
+ b('schema','students: student_id → first_name, last_name, email, major.\nemail → student_id, first_name, last_name, major.'),
+ b('schema','instructors: instructor_id → department_id, first_name, last_name, email.\nemail → instructor_id, department_id, first_name, last_name.'),
+ b('schema','terms: term_id → name, year, start_date, end_date.\n(name, year) → term_id, start_date, end_date.'),
+ b('schema','courses: course_id → department_id, course_code, title, credits.\ncourse_code → course_id, department_id, title, credits.'),
+ b('schema','sections: section_id → course_id, instructor_id, term_id, section_number, meeting_time, location, capacity.\n(course_id, term_id, section_number) → section_id, instructor_id, meeting_time, location, capacity.'),
+ b('schema','registrations: registration_id → student_id, section_id, registered_at, status, final_grade.\n(student_id, section_id) → registration_id, registered_at, status, final_grade.'),
+ b('schema','course_prerequisites: the entire (course_id, prerequisite_id) pair is the key. There are no non-key attributes.'),
+ b('schema','waitlist_entries: (student_id, section_id) → joined_at.\nNeither student_id nor section_id alone determines joined_at.'),
+ b('schema','student_holds: hold_id → student_id, reason, placed_at, cleared_at.'),
+ b('h','Why the relations satisfy 3NF'),
+ b('body','Each non-key attribute depends on a whole candidate key. The composite associations have no dependency on only part of their key. There is no dependency in which a non-key attribute determines another non-key attribute. For example, sections stores course_id but not the course title; courses stores department_id but not the department name. Those descriptions are obtained with joins. Thus the listed functional dependencies satisfy 3NF; with these domain assumptions, their nontrivial determinants are also superkeys.'),
+ b('body','Schedules, occupied-seat counts, and queue positions are derived by SQL instead of stored as duplicate attributes. Unique keys identify records; checks and transactions enforce the separate business rules. Normalization does not by itself enforce capacity or eligibility.')
+]})
+pages.append({'title':'SQL for searches and joined views','blocks':[
+ b('small','The statements below illustrate the application’s SQL operations. A ? is a value bound by mysql2. Optional filters are assembled from a fixed allowlist, never by inserting user text as SQL syntax. Complete representative statements are in docs/feature-queries.sql.'),
+ b('h','Section search: find an offering and its instructor'),
+ b('code',"SELECT s.section_id, c.course_code, c.title, d.name AS department,\n       t.name, t.year, s.section_number, s.meeting_time, s.location,\n       CONCAT(i.first_name, ' ', i.last_name) AS instructor\nFROM sections s\nJOIN courses c ON c.course_id = s.course_id\nJOIN departments d ON d.department_id = c.department_id\nJOIN terms t ON t.term_id = s.term_id\nJOIN instructors i ON i.instructor_id = s.instructor_id\nWHERE (c.course_code LIKE ? OR c.title LIKE ?)\n  AND s.term_id = ?\nORDER BY c.course_code, s.section_number;"),
+ b('body','A registrar can filter by course text and term and see descriptive information from five tables. The database performs the join and filtering. Instructor and department filters use the same parameterized pattern. Seat counts are computed from registration statuses, not from a stored counter.'),
+ b('h','Student schedule/history'),
+ b('code',"SELECT r.registration_id, c.course_code, c.title, c.credits,\n       s.section_number, t.name, t.year, s.meeting_time,\n       s.location, r.status, r.final_grade\nFROM registrations r\nJOIN sections s ON s.section_id = r.section_id\nJOIN courses c ON c.course_id = s.course_id\nJOIN terms t ON t.term_id = s.term_id\nWHERE r.student_id = ?\nORDER BY t.year DESC, t.start_date DESC, c.course_code;"),
+ b('body','This identifies one student’s current and historical registrations. A section roster joins registrations to students and filters by one section_id. Instructor schedules filter sections by instructor_id. These views satisfy the design’s required student, section, and instructor queries.')
+]})
+pages.append({'title':'SQL for reports and modifications','blocks':[
+ b('h','Enrollment summary: compare section demand'),
+ b('code',"SELECT d.name AS department, c.course_code, s.section_id,\n       s.section_number, s.capacity,\n       COUNT(r.registration_id) AS registration_records,\n       SUM(CASE WHEN r.status IN ('ENROLLED','COMPLETED')\n                THEN 1 ELSE 0 END) AS occupied_seats,\n       SUM(CASE WHEN r.status = 'ENROLLED' THEN 1 ELSE 0 END)\n         AS enrolled\nFROM sections s\nJOIN courses c ON c.course_id = s.course_id\nJOIN departments d ON d.department_id = c.department_id\nLEFT JOIN registrations r ON r.section_id = s.section_id\nWHERE s.term_id = ?\nGROUP BY d.name, c.course_code, s.section_id,\n         s.section_number, s.capacity\nORDER BY d.name, c.course_code, s.section_number;"),
+ b('body','GROUP BY creates one row per section. Conditional SUM counts seat-occupying and enrolled registrations. The LEFT JOIN includes sections with no registrations. This helps the registrar compare section demand without confusing historical dropped rows with occupied seats.'),
+ b('h','INSERT and UPDATE across two distinct tables'),
+ b('code',"INSERT INTO students (first_name, last_name, email, major)\nVALUES (?, ?, ?, ?);\nUPDATE students\nSET first_name = ?, last_name = ?, email = ?, major = ?\nWHERE student_id = ?;\n\nINSERT INTO courses (department_id, course_code, title, credits)\nVALUES (?, ?, ?, ?);\nUPDATE courses\nSET department_id = ?, course_code = ?, title = ?, credits = ?\nWHERE course_id = ?;"),
+ b('body','Student and course forms provide modification coverage across two tables. The server validates required fields, ranges, and IDs, and binds user values. The UPDATE targets the selected primary key. Duplicate email/code and missing foreign-key references return clear errors. Registration, grade, hold, section, prerequisite, and queue workflows provide further modifications.')
+]})
+pages.append({'title':'Registration rules and sample data','blocks':[
+ b('h','Rules involving more than one row'),
+ b('body','Enrollment locks the affected section, checks the student and active holds, checks all direct prerequisites against COMPLETED non-F grades, counts ENROLLED/COMPLETED seats in SQL, and writes only if capacity permits. The transaction either commits the whole operation or rolls back. Capacity changes use the same section lock and reject a value below the occupied count.'),
+ b('body','Status/grade updates preserve the original student–section pair. COMPLETED requires a valid grade, while other statuses clear it. Entering ENROLLED rechecks eligibility; existing enrollment is not removed automatically when a later hold is added. Completed historical results follow the SRS import assumption.'),
+ b('body','A waitlist addition requires a full section and no occupied seat for that student. The queue order is joined_at then student_id. Promotion chooses the first entry, rechecks eligibility, inserts or reactivates its registration, and removes the queue row in one transaction. If a check fails, the queue entry remains.'),
+ b('body','Prerequisite insertion rejects self-reference and uses the existing prerequisite graph to reject cycles. The user interface exposes registrar operations; direct SQL writes bypassing these cross-row checks are outside the normal workflow. MySQL still enforces foreign keys, uniqueness, and local checks.'),
+ b('h','Initial fictional dataset'),
+ b('body','6 departments; 24 students; 8 instructors; 3 academic terms; 16 courses; 26 sections; 118 registrations; 10 prerequisite links; 2 active waitlist entries; 4 holds. Registrations initially include 56 COMPLETED, 60 ENROLLED, one DROPPED, and one WITHDRAWN. The seed contains no real student records.'),
+ b('h','Repeatable demonstration cases'),
+ b('body','Fall 2026 is term 3. Student 20 (Nora Thompson) can enroll in CS 101 section 101. Student 3 (Alex Rivera) has an F in CS 101, so CS 201 section 102 fails its prerequisite check. Student 8 (Lena Hassan) has active hold 1.'),
+ b('body','CS 301 section 103 has capacity 3 and is full. Registrations 68, 69, and 70 occupy its seats. Students 5 (Ethan Brooks) and 6 (Priya Shah) are queued in that order. Dropping registration 68 creates a seat; promoting Ethan demonstrates the transaction and queue order. Attempting to make CS 101 require CS 201 demonstrates cycle rejection.')
+]})
+pages.append({'title':'Adaptation and application architecture','blocks':[
+ b('h','The database-class design is the source of truth'),
+ b('body','The team’s earlier College Course Registration SRS and ten-entity ER/schema assignment define this application. The separately supplied RISE-EDU archive is the team’s earlier enrollment project from another class. It informs familiar enrollment, drop/withdraw, holds, waitlist, schedule, and report workflows. It does not replace this assignment’s schema or establish this class’s team ID.'),
+ b('h','What changed from RISE-EDU'),
+ b('body','RISE-EDU used Java, Swing, TCP communication, and CSV storage. This implementation uses the required JavaScript, HTML, and CSS, with Express handling local HTTP requests and local MySQL storing committed changes immediately. SQL joins and grouped reports replace file-based processing. This project follows the single-college SRS; it does not claim RISE-EDU’s multi-university, account/authentication, or audit features.'),
+ b('h','Request and persistence flow'),
+ b('body','Browser forms call the Express API in index.js. Repository.js contains the SQL and transaction workflows. DAO.js manages mysql2 connections and transactions. Backend validation rejects missing or invalid values; parameter bindings keep values separate from SQL syntax; MySQL constraints enforce keys and local row rules. The response supplies clear feedback and the interface reloads saved data.'),
+ b('h','Framework role'),
+ b('body','Express is the server web framework. It serves the browser files, routes API requests, parses JSON bodies, and returns consistent errors. The frontend uses ordinary browser JavaScript. Framework use is optional under the assignment; grading or extra-credit eligibility is the instructor’s decision.'),
+ b('h','Adaptation record'),
+ b('body','See docs/RISE_EDU_ADAPTATION.md for the source and scope mapping. The user supplied RISE-EDU-main.zip locally; no GitHub URL was provided when this draft was generated. A source URL is recorded only when the team supplies one.')
+]})
+pages.append({'title':'Testing and observed limitations','verification':True})
+pages.append({'title':'Reproduction and references','blocks':[
+ b('h','Reproduction'),
+ b('body','Install Node.js and local MySQL. Run npm install, configure .env from .env.example, run npm run db:setup, and start with npm start (or node index.js). Open http://localhost:3000/. The local:setup/local:start helpers provide a separate user-owned MySQL instance when needed. See README.md for the full instructions. sql/schema.sql and sql/seed.sql recreate the demonstration data in an empty database.'),
+ b('h','Demo video'),
+ b('demo',''),
+ b('body','The recording must be no longer than seven minutes and demonstrate a search, INSERT, UPDATE, JOIN, grouped report, a rejected operation, and persisted modifications. The timed plan is docs/DEMO_SCRIPT.txt.'),
+ b('h','References and assistance'),
+ b('small','[1] Team’s previous College Course Registration SRS, ER diagram, and relational schema, Wail Mohammed and Yesenia Ruiz.\n[2] Instructor Tian Zhou, Web_App_Assignment.pdf and TodoMySQL starter: Express/public-folder organization and MySQL DAO/repository pattern.\n[3] Team-supplied RISE-EDU-main.zip: earlier Java/Swing enrollment project; workflow inspiration and adaptation source.\n[4] Node.js documentation: https://nodejs.org/en/docs\n[5] Express documentation (routing and middleware): https://expressjs.com/\n[6] mysql2 documentation (connections and bound values): https://sidorares.github.io/node-mysql2/docs\n[7] MySQL Reference Manual (constraints): https://dev.mysql.com/doc/refman/8.4/en/create-table-check-constraints.html'),
+ b('small','Codex/ChatGPT assistance was used for implementation, documentation, and testing based on the team’s design. The application’s registration workflows, constraints, queries, and presentation were adapted to that design. The team should review the source and understand the SQL before presenting it.')
+]})
+(root/'docs/report-content.json').write_text(json.dumps({'pages':pages},indent=2,ensure_ascii=False))

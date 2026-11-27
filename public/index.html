@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#163b36">
+  <meta name="description" content="A local course registration workspace for college registrars.">
+  <title>Campus Register · Sections</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#sections" aria-label="Campus Register home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M6 9.5 16 5l10 4.5v13L16 27 6 22.5v-13Z" stroke="currentColor" stroke-width="1.6"/><path d="m6 9.5 10 5 10-5M16 14.5V27" stroke="currentColor" stroke-width="1.6"/><path d="m11 7.3 10 5v7.2" stroke="currentColor" stroke-width="1.6"/></svg></span>
+        <span>Campus<span class="brand-second">Register<span class="brand-period">.</span></span></span>
+      </a>
+      <p class="nav-label">WORKSPACE</p>
+      <nav id="navigation">
+        <a href="#sections" data-view="sections" class="nav-link active"><span data-icon="grid"></span>Sections <span class="nav-arrow">↗</span></a>
+        <a href="#students" data-view="students" class="nav-link"><span data-icon="users"></span>Students</a>
+        <a href="#courses" data-view="courses" class="nav-link"><span data-icon="book"></span>Course catalog</a>
+        <a href="#registrations" data-view="registrations" class="nav-link"><span data-icon="check"></span>Registrations</a>
+        <a href="#holds" data-view="holds" class="nav-link"><span data-icon="shield"></span>Student holds</a>
+        <a href="#waitlists" data-view="waitlists" class="nav-link"><span data-icon="clock"></span>Waitlists</a>
+        <a href="#reports" data-view="reports" class="nav-link"><span data-icon="chart"></span>Reports</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-note"><span class="note-symbol">✳</span><p>Less paperwork.<br>More possibilities.</p><span>YOUR REGISTRATION WORKSPACE</span></div>
+        <div class="workspace-user"><div class="avatar">CR</div><div><strong>College registrar</strong><span>Local administration</span></div></div>
+      </div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Registrar workspace</span><span aria-hidden="true">/</span><strong id="breadcrumb-view">Sections</strong></div>
+        <span id="connection-state" class="connection"><span class="connection-dot"></span>Connecting to database</span>
+      </header>
+      <main id="main" tabindex="-1">
+        <section class="page-heading">
+          <div><p class="eyebrow" id="page-eyebrow">THE ACADEMIC WORKSPACE</p><h1 id="page-title">Sections</h1><p id="page-description">Explore course offerings and keep every seat accounted for.</p></div>
+          <div class="heading-actions" id="heading-actions"></div>
+        </section>
+        <div id="page-content" aria-live="polite"><div class="loading-state"><span class="spinner"></span><p>Loading your workspace…</p></div></div>
+        <footer class="page-footer"><span>Campus Register <span aria-hidden="true">·</span> Built for a smoother semester</span><span>College Course Registration System</span></footer>
+      </main>
+    </div>
+  </div>
+  <dialog id="app-dialog" aria-labelledby="dialog-title"><form id="dialog-form" novalidate><div class="dialog-header"><div><p class="eyebrow" id="dialog-eyebrow">CAMPUS REGISTER</p><h2 id="dialog-title"></h2></div><button class="icon-button" type="button" id="dialog-close" aria-label="Close dialog">×</button></div><div class="dialog-body" id="dialog-body"></div><p id="form-error" class="form-error" role="alert" hidden></p><div class="dialog-footer"><button class="button button-secondary" id="dialog-cancel" type="button">Cancel</button><button class="button button-primary" id="dialog-submit" type="submit">Save changes</button></div></form></dialog>
+  <div class="toast-region" id="toasts" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

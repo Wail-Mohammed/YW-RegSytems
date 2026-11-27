@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1660 1030" role="img" aria-labelledby="title desc">
+<title id="title">College Course Registration: clarified ER relationship constraints</title>
+<desc id="desc">Crow's Foot notation. Every child belongs to exactly one parent; each parent may have zero or many children. Two separately labeled roles resolve the recursive course prerequisite relationship.</desc>
+<rect width="1660" height="1030" fill="#fafaf7"/>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#183f39}.table{font-size:20px;font-weight:700}.field{font-size:16px}.rel{font-size:15px;paint-order:stroke;stroke:#fafaf7;stroke-width:5;stroke-linejoin:round}.edge{fill:none;stroke:#557e73;stroke-width:2}.mark{fill:none;stroke:#234e42;stroke-width:2}</style>
+<text x="40" y="44" font-size="27" font-weight="bold">College Course Registration — clarified relationship constraints</text>
+<polyline class="edge" points="290,150 410,150"/>
+<polyline class="edge" points="165,198 165,370"/>
+<polyline class="edge" points="550,223 550,430"/>
+<polyline class="edge" points="320,430 385,430 385,500 450,500"/>
+<polyline class="edge" points="290,750 370,750 370,580 450,580"/>
+<polyline class="edge" points="700,135 820,135"/>
+<polyline class="edge" points="700,195 820,195"/>
+<polyline class="edge" points="790,470 835,470 835,385 880,385"/>
+<polyline class="edge" points="790,580 830,580 830,790 880,790"/>
+<polyline class="edge" points="1310,520 1260,520 1260,420 1220,420"/>
+<polyline class="edge" points="1310,590 1260,590 1260,790 1220,790"/>
+<polyline class="edge" points="1455,490 1455,198"/>
+<rect x="40" y="100" width="250" height="98" rx="6" fill="white" stroke="#426e60" stroke-width="1.8"/>
+<rect x="41" y="101" width="248" height="35" rx="5" fill="#e4eee7"/>
+<text class="table" x="52" y="125">departments</text>
+<text class="field" x="52" y="161">PK department_id</text>
+<text class="field" x="52" y="186">UQ name</text>
+<rect x="40" y="370" width="280" height="123" rx="6" fill="white" stroke="#426e60" stroke-width="1.8"/>
+<rect x="41" y="371" width="278" height="35" rx="5" fill="#e4eee7"/>
+<text class="table" x="52" y="395">instructors</text>
+<text class="field" x="52" y="431">PK instructor_id</text>
+<text class="field" x="52" y="456">FK department_id</text>
+<text class="field" x="52" y="481">UQ email</text>
+<rect x="410" y="100" width="290" height="123" rx="6" fill="white" stroke="#426e60" stroke-width="1.8"/>
+<rect x="411" y="101" width="288" height="35" rx="5" fill="#e4eee7"/>
+<text class="table" x="422" y="125">courses</text>
+<text class="field" x="422" y="161">PK course_id</text>
+<text class="field" x="422" y="186">FK department_id</text>
+<text class="field" x="422" y="211">UQ course_code</text>
+<rect x="820" y="100" width="350" height="123" rx="6" fill="white" stroke="#426e60" stroke-width="1.8"/>
+<rect x="821" y="101" width="348" height="35" rx="5" fill="#e4eee7"/>
+<text class="table" x="832" y="125">course_prerequisites</text>
+<text class="field" x="832" y="161">PK/FK course_id (dependent)</text>
+<text class="field" x="832" y="186">PK/FK prerequisite_id (required)</text>
+<text class="field" x="832" y="211">PK = (course_id, prerequisite_id)</text>
+<rect x="40" y="700" width="250" height="98" rx="6" fill="white" stroke="#426e60" stroke-width="1.8"/>
+<rect x="41" y="701" width="248" height="35" rx="5" fill="#e4eee7"/>
+<text class="table" x="52" y="725">terms</text>
+<text class="field" x="52" y="761">PK term_id</text>
+<text class="field" x="52" y="786">UQ (name, year)</text>
+<rect x="450" y="430" width="340" height="198" rx="6" fill="white" stroke="#426e60" stroke-width="1.8"/>
+<rect x="451" y="431" width="338" height="35" rx="5" fill="#e4eee7"/>
+<text class="table" x="462" y="455">sections</text>
+<text class="field" x="462" y="491">PK section_id</text>
+<text class="field" x="462" y="516">FK course_id</text>
+<text class="field" x="462" y="541">FK instructor_id</text>
+<text class="field" x="462" y="566">FK term_id</text>
+<text class="field" x="462" y="591">UQ (course_id, term_id,</text>
+<text class="field" x="462" y="616">    section_number)</text>
+<rect x="880" y="330" width="340" height="148" rx="6" fill="white" stroke="#426e60" stroke-width="1.8"/>
+<rect x="881" y="331" width="338" height="35" rx="5" fill="#e4eee7"/>
+<text class="table" x="892" y="355">registrations</text>
+<text class="field" x="892" y="391">PK registration_id</text>
+<text class="field" x="892" y="416">FK student_id</text>
+<text class="field" x="892" y="441">FK section_id</text>
+<text class="field" x="892" y="466">UQ (student_id, section_id)</text>
+<rect x="880" y="740" width="340" height="123" rx="6" fill="white" stroke="#426e60" stroke-width="1.8"/>
+<rect x="881" y="741" width="338" height="35" rx="5" fill="#e4eee7"/>
+<text class="table" x="892" y="765">waitlist_entries</text>
+<text class="field" x="892" y="801">PK/FK student_id</text>
+<text class="field" x="892" y="826">PK/FK section_id</text>
+<text class="field" x="892" y="851">PK = (student_id, section_id)</text>
+<rect x="1310" y="490" width="290" height="123" rx="6" fill="white" stroke="#426e60" stroke-width="1.8"/>
+<rect x="1311" y="491" width="288" height="35" rx="5" fill="#e4eee7"/>
+<text class="table" x="1322" y="515">students</text>
+<text class="field" x="1322" y="551">PK student_id</text>
+<text class="field" x="1322" y="576">UQ email</text>
+<text class="field" x="1322" y="601">major (optional text)</text>
+<rect x="1310" y="100" width="290" height="98" rx="6" fill="white" stroke="#426e60" stroke-width="1.8"/>
+<rect x="1311" y="101" width="288" height="35" rx="5" fill="#e4eee7"/>
+<text class="table" x="1322" y="125">student_holds</text>
+<text class="field" x="1322" y="161">PK hold_id</text>
+<text class="field" x="1322" y="186">FK student_id</text>
+<line class="mark" x1="299.0" y1="142.0" x2="299.0" y2="158.0"/>
+<line class="mark" x1="306.0" y1="142.0" x2="306.0" y2="158.0"/>
+<line class="mark" x1="391.0" y1="150.0" x2="407.0" y2="158.0"/>
+<line class="mark" x1="391.0" y1="150.0" x2="407.0" y2="150.0"/>
+<line class="mark" x1="391.0" y1="150.0" x2="407.0" y2="142.0"/>
+<circle class="mark" cx="380.0" cy="150.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="350" y="128">contains</text>
+<line class="mark" x1="173.0" y1="207.0" x2="157.0" y2="207.0"/>
+<line class="mark" x1="173.0" y1="214.0" x2="157.0" y2="214.0"/>
+<line class="mark" x1="165.0" y1="351.0" x2="157.0" y2="367.0"/>
+<line class="mark" x1="165.0" y1="351.0" x2="165.0" y2="367.0"/>
+<line class="mark" x1="165.0" y1="351.0" x2="173.0" y2="367.0"/>
+<circle class="mark" cx="165.0" cy="340.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="210" y="285">employs</text>
+<line class="mark" x1="558.0" y1="232.0" x2="542.0" y2="232.0"/>
+<line class="mark" x1="558.0" y1="239.0" x2="542.0" y2="239.0"/>
+<line class="mark" x1="550.0" y1="411.0" x2="542.0" y2="427.0"/>
+<line class="mark" x1="550.0" y1="411.0" x2="550.0" y2="427.0"/>
+<line class="mark" x1="550.0" y1="411.0" x2="558.0" y2="427.0"/>
+<circle class="mark" cx="550.0" cy="400.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="590" y="325">offers</text>
+<line class="mark" x1="329.0" y1="422.0" x2="329.0" y2="438.0"/>
+<line class="mark" x1="336.0" y1="422.0" x2="336.0" y2="438.0"/>
+<line class="mark" x1="431.0" y1="500.0" x2="447.0" y2="508.0"/>
+<line class="mark" x1="431.0" y1="500.0" x2="447.0" y2="500.0"/>
+<line class="mark" x1="431.0" y1="500.0" x2="447.0" y2="492.0"/>
+<circle class="mark" cx="420.0" cy="500.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="382" y="410">teaches</text>
+<line class="mark" x1="299.0" y1="742.0" x2="299.0" y2="758.0"/>
+<line class="mark" x1="306.0" y1="742.0" x2="306.0" y2="758.0"/>
+<line class="mark" x1="431.0" y1="580.0" x2="447.0" y2="588.0"/>
+<line class="mark" x1="431.0" y1="580.0" x2="447.0" y2="580.0"/>
+<line class="mark" x1="431.0" y1="580.0" x2="447.0" y2="572.0"/>
+<circle class="mark" cx="420.0" cy="580.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="365" y="685">schedules</text>
+<line class="mark" x1="709.0" y1="127.0" x2="709.0" y2="143.0"/>
+<line class="mark" x1="716.0" y1="127.0" x2="716.0" y2="143.0"/>
+<line class="mark" x1="801.0" y1="135.0" x2="817.0" y2="143.0"/>
+<line class="mark" x1="801.0" y1="135.0" x2="817.0" y2="135.0"/>
+<line class="mark" x1="801.0" y1="135.0" x2="817.0" y2="127.0"/>
+<circle class="mark" cx="790.0" cy="135.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="760" y="118">dependent</text>
+<line class="mark" x1="709.0" y1="187.0" x2="709.0" y2="203.0"/>
+<line class="mark" x1="716.0" y1="187.0" x2="716.0" y2="203.0"/>
+<line class="mark" x1="801.0" y1="195.0" x2="817.0" y2="203.0"/>
+<line class="mark" x1="801.0" y1="195.0" x2="817.0" y2="195.0"/>
+<line class="mark" x1="801.0" y1="195.0" x2="817.0" y2="187.0"/>
+<circle class="mark" cx="790.0" cy="195.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="760" y="230">required</text>
+<line class="mark" x1="799.0" y1="462.0" x2="799.0" y2="478.0"/>
+<line class="mark" x1="806.0" y1="462.0" x2="806.0" y2="478.0"/>
+<line class="mark" x1="861.0" y1="385.0" x2="877.0" y2="393.0"/>
+<line class="mark" x1="861.0" y1="385.0" x2="877.0" y2="385.0"/>
+<line class="mark" x1="861.0" y1="385.0" x2="877.0" y2="377.0"/>
+<circle class="mark" cx="850.0" cy="385.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="832" y="360">receives</text>
+<line class="mark" x1="799.0" y1="572.0" x2="799.0" y2="588.0"/>
+<line class="mark" x1="806.0" y1="572.0" x2="806.0" y2="588.0"/>
+<line class="mark" x1="861.0" y1="790.0" x2="877.0" y2="798.0"/>
+<line class="mark" x1="861.0" y1="790.0" x2="877.0" y2="790.0"/>
+<line class="mark" x1="861.0" y1="790.0" x2="877.0" y2="782.0"/>
+<circle class="mark" cx="850.0" cy="790.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="825" y="700">queues</text>
+<line class="mark" x1="1301.0" y1="528.0" x2="1301.0" y2="512.0"/>
+<line class="mark" x1="1294.0" y1="528.0" x2="1294.0" y2="512.0"/>
+<line class="mark" x1="1239.0" y1="420.0" x2="1223.0" y2="412.0"/>
+<line class="mark" x1="1239.0" y1="420.0" x2="1223.0" y2="420.0"/>
+<line class="mark" x1="1239.0" y1="420.0" x2="1223.0" y2="428.0"/>
+<circle class="mark" cx="1250.0" cy="420.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="1260" y="385">registers</text>
+<line class="mark" x1="1301.0" y1="598.0" x2="1301.0" y2="582.0"/>
+<line class="mark" x1="1294.0" y1="598.0" x2="1294.0" y2="582.0"/>
+<line class="mark" x1="1239.0" y1="790.0" x2="1223.0" y2="782.0"/>
+<line class="mark" x1="1239.0" y1="790.0" x2="1223.0" y2="790.0"/>
+<line class="mark" x1="1239.0" y1="790.0" x2="1223.0" y2="798.0"/>
+<circle class="mark" cx="1250.0" cy="790.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="1285" y="710">waitlists</text>
+<line class="mark" x1="1447.0" y1="481.0" x2="1463.0" y2="481.0"/>
+<line class="mark" x1="1447.0" y1="474.0" x2="1463.0" y2="474.0"/>
+<line class="mark" x1="1455.0" y1="217.0" x2="1463.0" y2="201.0"/>
+<line class="mark" x1="1455.0" y1="217.0" x2="1455.0" y2="201.0"/>
+<line class="mark" x1="1455.0" y1="217.0" x2="1447.0" y2="201.0"/>
+<circle class="mark" cx="1455.0" cy="228.0" r="4.5" style="fill:#fafaf7"/>
+<text class="rel" text-anchor="middle" x="1505" y="350">has holds</text>
+<text x="40" y="950" font-size="19" font-weight="bold">Read both ends: || = exactly one (1..1); circle + crow's foot = zero or many (0..N).</text>
+<text x="40" y="980" font-size="17">Each association row has mandatory parent references. A parent can exist without any child rows. See RELATIONSHIPS.md for all 12 rules.</text>
+<text x="40" y="1008" font-size="16">PK = primary key; FK = foreign key; UQ = unique key. All attributes and composite unique constraints appear in sql/schema.sql.</text>
+</svg>

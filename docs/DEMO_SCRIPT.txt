@@ -1,0 +1,75 @@
+Team: YW-RegSytems
+
+CAMPUS REGISTER — DEMONSTRATION PLAN (target 6:30; maximum 7:00)
+Wail Mohammed and Yesenia Ruiz
+
+Before recording
+1. Start the local database and application using README.md.
+2. Open http://localhost:3000/ in Chrome. Use a seeded, clean database.
+3. Use fictional demo data only. Keep the MySQL password and .env file off screen.
+4. Record the application window and narrate what each operation demonstrates.
+5. Publish the video with access enabled for the instructor. Add its viewable URL
+   to docs/submission.json and the README; regenerate the PDF report.
+
+0:00–0:25 — Purpose and design
+“This is Campus Register, our college course registration application. Node.js
+and Express serve the interface and API, and the data is stored in local MySQL.
+Our design separates catalog courses from term-specific sections and connects
+students and sections through registrations.”
+
+0:25–1:10 — Search and JOIN query
+Open Sections. Filter by academic term, department, and a course keyword.
+Show the course title, department, instructor, meeting, location, and seats.
+Explain that SQL joins the underlying tables and filters on the server.
+Open a section roster or a student schedule to demonstrate another useful JOIN.
+
+1:10–2:05 — INSERT and persistence
+Open Students and add a fictional student, for example Taylor Demo, with a
+unique email such as taylor.demo.2026@example.edu. Show the success message.
+Refresh or search for the new student and show that the record is still present.
+Also show the same record in MySQL Workbench with a SELECT query, if available.
+
+2:05–2:55 — UPDATE and a second table
+Edit the new student's name or email. Show only the selected record changes.
+Create or edit a course/section, or create a registration for the new student,
+so the insert/update demonstration covers at least two distinct tables.
+Refresh and show that the modified record remains saved.
+
+2:55–3:45 — Registration rules
+Show a successful enrollment into a section with seats and no prerequisites.
+Show a full section and the waitlist. Explain that a transaction checks capacity,
+active holds, and completed prerequisite courses before allocating a seat.
+If time allows, release a seat and promote the first eligible waiting student.
+
+3:45–4:30 — GROUP BY summary report
+Open Reports and filter the term. Show the grouped enrollment summary.
+Explain that COUNT/SUM with GROUP BY counts registrations and occupied seats;
+the database performs the aggregation rather than browser JavaScript.
+
+4:30–5:35 — Invalid input and database constraints
+Try a student email already in use and show the clear duplicate message.
+Show a missing required field or invalid value. Cancel an unfinished form.
+Try enrolling a student with an active hold or a missing prerequisite.
+Show that rejected changes leave the stored data unchanged.
+
+5:35–6:10 — Confirm persistence
+Reload the browser. Find the student and the second modified record again.
+Show a SQL SELECT in MySQL Workbench for those exact IDs, if available.
+Do not rely only on a temporary success notification as persistence evidence.
+
+6:10–6:30 — Conclusion
+Show the source package, SQL schema/sample data, and PDF report filenames.
+State the OS and browser actually used. Explain that the project runs locally.
+
+Recording checks
+- Search, INSERT, UPDATE, JOIN, GROUP BY report, and a rejected operation appear.
+- Modifications cover at least two tables and persistence is visible after reload.
+- Video length is no more than seven minutes.
+- The instructor can open the submitted link without requesting access.
+- Do not claim physical-device testing unless it was actually performed.
+
+CLASS DESIGN NOTE
+Explain that the diagram now uses one Crow's Foot notation consistently.
+Each registration references exactly one student and one section; each student
+and section can have zero or many registrations. Both course-prerequisite roles
+are named. Mention the same ten entities and the retained major attribute.

@@ -1,0 +1,79 @@
+erDiagram
+    departments ||--o{ courses : contains
+    departments ||--o{ instructors : employs
+    courses ||--o{ sections : offers
+    instructors ||--o{ sections : teaches
+    terms ||--o{ sections : schedules
+    students ||--o{ registrations : has
+    sections ||--o{ registrations : receives
+    courses ||--o{ course_prerequisites : dependent_course
+    courses ||--o{ course_prerequisites : required_course
+    students ||--o{ waitlist_entries : joins
+    sections ||--o{ waitlist_entries : queues
+    students ||--o{ student_holds : receives
+    departments {
+        int department_id PK
+        varchar name UK
+    }
+    students {
+        int student_id PK
+        varchar first_name
+        varchar last_name
+        varchar email UK
+        varchar major "optional; one free-text value"
+    }
+    instructors {
+        int instructor_id PK
+        int department_id FK
+        varchar first_name
+        varchar last_name
+        varchar email UK
+    }
+    terms {
+        int term_id PK
+        enum name
+        int year
+        date start_date
+        date end_date
+    }
+    courses {
+        int course_id PK
+        int department_id FK
+        varchar course_code UK
+        varchar title
+        int credits
+    }
+    sections {
+        int section_id PK
+        int course_id FK
+        int instructor_id FK
+        int term_id FK
+        varchar section_number
+        varchar meeting_time
+        varchar location
+        int capacity
+    }
+    registrations {
+        int registration_id PK
+        int student_id FK
+        int section_id FK
+        datetime registered_at
+        enum status
+        enum final_grade
+    }
+    course_prerequisites {
+        int course_id PK,FK
+        int prerequisite_id PK,FK
+    }
+    waitlist_entries {
+        int student_id PK,FK
+        int section_id PK,FK
+        datetime joined_at
+    }
+    student_holds {
+        int hold_id PK
+        int student_id FK
+        varchar reason
+        datetime placed_at
+        datetime cleared_at
+    }

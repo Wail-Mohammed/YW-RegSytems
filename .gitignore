@@ -1,0 +1,13 @@
+node_modules/
+.env
+.local-mysql/
+*.log
+.DS_Store
+docs/report.html
+.local-browser/
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+coverage/
+.angular/

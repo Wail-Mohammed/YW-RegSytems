@@ -1,0 +1,30 @@
+{
+  "name": "campus-register",
+  "version": "1.0.0",
+  "private": true,
+  "description": "College course registration \u2014 MySQL database application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "db:setup": "node scripts/setup-db.js",
+    "local:setup": "node scripts/local-mysql.js setup",
+    "local:start": "node scripts/local-mysql.js start",
+    "local:stop": "node scripts/local-mysql.js stop",
+    "test": "node --test test/validation.test.js",
+    "test:integration": "node --test test/integration.test.js",
+    "check": "node --check index.js && node --check Repository.js && node --check DAO.js && node --check config.js && node --check validation.js && node --check public/main.js && node --check scripts/setup-db.js && node --check scripts/local-mysql.js && node --check scripts/chrome.js && node --check scripts/browser-check.js && node --check scripts/generate-report.js",
+    "test:browser": "node scripts/browser-check.js",
+    "report": "node scripts/generate-report.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "Wail Mohammed and Yesenia Ruiz",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mysql2": "^3.11.4"
+  }
+}

@@ -1,0 +1,117 @@
+DATABASE IMPLEMENTATION NOTES
+
+The relational design follows the supplied College Course Registration SRS (R01-R20,
+P01-P12). Table names use plural snake_case for the JavaScript implementation.
+SQL files operate within the database selected by the application's configuration.
+schema.sql creates the ten tables; seed.sql inserts fictional demonstration data once
+into the empty schema. Neither file drops existing databases or tables.
+
+Small revisions from the earlier design:
+- Added course_code as a unique, user-facing catalog identifier (for example CS 101).
+  course_id remains the primary key used by relationships.
+- Restored the student major required by R02 and shown in the supplied ER/schema.
+  A student has one free-text major (VARCHAR(120)); NULL means undeclared. This is
+  an explicit implementation assumption: R02 does not define a major catalog,
+  multiple majors, or a student-to-department relationship. A present value must
+  be nonblank. Matching a department's name does not create a foreign key.
+- WaitlistEntry stores only active entries. Position is computed by joined_at, then
+  student_id; position and seat counts are not stored.
+- The previous schema narrative mentioned maximum waitlist capacity, although the
+  numbered SRS did not define a bound. This implementation follows R18/P08 and does
+  not invent a second capacity rule for the waitlist.
+- DATETIME fields represent UTC instants; the application should present timestamps
+  as ISO 8601 UTC. MySQL sessions and the seed script use UTC.
+
+Functional dependencies / 3NF:
+- departments: department_id -> name; name is an alternate key.
+- students: student_id -> first_name,last_name,email,major; email is an alternate
+  key. Major is a descriptive attribute and introduces no further dependency.
+- instructors: instructor_id -> department_id,first_name,last_name,email; email is
+  an alternate key within instructors.
+- terms: term_id -> name,year,start_date,end_date; (name,year) is an alternate key.
+- courses: course_id -> department_id,course_code,title,credits; course_code is an
+  alternate key.
+- sections: section_id -> course_id,instructor_id,term_id,section_number,meeting_time,
+  location,capacity; (course_id,term_id,section_number) is an alternate key.
+- registrations: registration_id -> student_id,section_id,registered_at,status,
+  final_grade; (student_id,section_id) is an alternate key.
+- course_prerequisites: (course_id,prerequisite_id) is the whole key; there are no
+  non-key attributes.
+- waitlist_entries: (student_id,section_id) -> joined_at.
+- student_holds: hold_id -> student_id,reason,placed_at,cleared_at.
+Under these stated domain assumptions, every determinant of a nontrivial functional
+dependency is a candidate key. Non-key attributes depend on a whole key with no
+non-key-to-non-key dependency. The tables satisfy 3NF. Descriptive department/course/
+student data remain in their own tables instead of being copied into associations.
+
+Database-enforced constraints:
+- Primary keys on all tables; foreign keys use RESTRICT on update and delete.
+- Unique department names, person emails within each person table, course codes,
+  term name/year, section course/term/number, and student/section registrations.
+- NOT NULL for required data; nonblank text checks.
+- Credits 1-6, positive section capacities, term year 1900-9999, valid date order.
+- Allowed registration statuses/grades and grade/status consistency.
+- A prerequisite cannot reference itself.
+- A clearing timestamp cannot precede hold placement.
+
+Relationship constraints / participation:
+- Every course and instructor references exactly one department. Every section
+  references exactly one course, instructor, and term. Every registration and
+  active waitlist entry references exactly one student and one section. Every
+  hold references exactly one student. Every prerequisite link references one
+  course in the dependent role and one in the prerequisite role.
+- These children participate totally (1,1); each parent may have zero through
+  many children (0,N). No requirement says a parent must already have a child.
+- docs/er-diagram.svg and .mmd use Crow's Foot endpoint notation: || = exactly
+  one, o< = zero or many. Marks describe the entity at that endpoint as counted
+  from one instance of the opposite entity. They are not Chen participation
+  labels, which describe the marked entity's own relationship participation.
+- Registrations, waitlist entries, and prerequisite links resolve three M:N
+  relationships. Registration has a surrogate primary key and a unique pair;
+  waitlist and prerequisite relations have composite pair primary keys.
+- See docs/RELATIONSHIPS.md for every relationship in both directions, the
+  role names in the recursive prerequisite relationship, and rules that cannot
+  be expressed by an ordinary ER endpoint.
+
+Rules requiring transactions across rows:
+- Check no active hold and all direct prerequisites completed with a non-F grade
+  on entering ENROLLED. Historical COMPLETED results may be imported (P06).
+- Lock a section before seat counts or capacity changes. ENROLLED and COMPLETED
+  occupy seats; DROPPED and WITHDRAWN do not (P07).
+- Detect prerequisite cycles, not only self-references.
+- Join a waitlist only for a full section and without an existing seat.
+- Promote the oldest queued student (joined_at,student_id), recheck eligibility,
+  write or reactivate the registration, and remove the queue entry atomically.
+
+SEED COUNTS
+departments 6; students 24; instructors 8; terms 3; courses 16; sections 26;
+registrations 118; course_prerequisites 10; waitlist_entries 2; student_holds 4.
+The registrations comprise 56 COMPLETED, 60 ENROLLED, one DROPPED and one WITHDRAWN.
+
+DEMO SCENARIOS (stable IDs)
+- Fall 2026: term_id=3; Spring 2026: 1; Summer 2026: 2.
+- Easy new enrollment: student_id=20 Nora Thompson, section_id=101 CS 101.
+  Nora has no CS prerequisite requirement, no active hold, and no existing 101 row.
+- Missing/passing prerequisite: student_id=3 Alex Rivera has an F in CS 101
+  (registration_id=3) and cannot enter CS 201 section_id=102. student_id=11 Amir
+  Rahman has a D in CS 101, which satisfies this design's non-F passing rule.
+- Active hold: student_id=8 Lena Hassan, hold_id=1, outstanding tuition balance.
+  student_id=22 Ella Scott has hold_id=2, placed after existing registrations.
+- Full section: section_id=103 CS 301 Database Systems has capacity=3 and seats
+  held by students 1 Maya Chen, 2 Jordan Patel, and 4 Sofia Martinez
+  (registration_ids=68,69,70). All passed CS 201 in Summer 2026.
+- Waitlist: students 5 Ethan Brooks and 6 Priya Shah queue for section 103, in that
+  order. Both have completed the required CS 201. Drop student 1's registration 68,
+  then promote Ethan in a transaction to demonstrate seat release and queue order.
+- Course 2 CS 201 requires course 1 CS 101. Courses 3/4/5/16 require course 2.
+  Attempt to make CS 101 require CS 201 to demonstrate cycle prevention.
+- Reactivation: student_id=10 Isabella Nguyen has a DROPPED registration for
+  section_id=116 CS 320 Computer Networks (registration_id=117), and passed CS 201.
+- Historical grades: Spring sections 1/6/9/11/13/15 and Summer sections 51-54
+  contain completed outcomes. Student 3's CS 101 F is the failing-prerequisite case.
+- Cleared hold: student_id=12 Grace Taylor, hold_id=3, has a historical cleared
+  hold and can still enroll when other eligibility rules are satisfied.
+
+All sample names and example.edu email addresses are fictional. The three-term data
+allows term filters, student history, section rosters, instructor schedules, joined
+searches, enrollment counts, and aggregate reports to return useful results.

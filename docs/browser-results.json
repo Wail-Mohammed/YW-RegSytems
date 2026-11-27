@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-27T04:09:12.055Z",
+  "browser": "Chrome/158.0.8127.38",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36",
+  "passed": 9,
+  "results": [
+    "Desktop Chrome loads MySQL-backed offerings and instructor filter",
+    "Form search and JOIN-backed section roster work",
+    "Student INSERT and UPDATE including major persist through page reload and SQL SELECT",
+    "Required browser validation and Cancel prevent unintended INSERT",
+    "A second table supports persisted browser INSERT and targeted UPDATE",
+    "A duplicate-key violation produces visible form feedback",
+    "Registrations, holds, waitlists, and GROUP BY report render without errors",
+    "A refresh failure after saving produces a visible and truthful warning",
+    "390px viewport remains usable; this is emulation, not a physical phone test"
+  ],
+  "physicalPhoneTested": false
+}

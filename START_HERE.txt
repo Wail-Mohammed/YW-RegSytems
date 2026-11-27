@@ -1,0 +1,54 @@
+COLLEGE COURSE REGISTRATION — DATABASE CLASS VERSION
+Wail Mohammed and Yesenia Ruiz
+Team: YW-RegSytems
+
+The implementation follows your database-class SRS and final ten-entity design.
+The professor's relationship feedback is addressed by a consistent Crow's Foot
+diagram and explicit minimum/maximum participation rules in both directions.
+
+IMPORTANT FILES
+README.md: full setup, usage, credits, testing, and submission instructions.
+report.pdf: generated report; team ID and demo link are still pending.
+docs/er-diagram.svg: readable corrected diagram.
+docs/er-diagram.mmd: editable diagram with all attributes.
+docs/RELATIONSHIPS.md: how to explain every relationship to the professor.
+docs/REQUIREMENT_TRACEABILITY.md: original SRS requirement -> implementation.
+docs/RISE_EDU_ADAPTATION.md: how the earlier Java project informs this version.
+sql/schema.sql and sql/seed.sql: recreate the demonstrated MySQL database.
+docs/verification.json: observed test environment and results.
+docs/DEMO_SCRIPT.txt: plan for the required video of at most seven minutes.
+
+RUN THE LOCAL COPY ALREADY CONFIGURED ON THIS COMPUTER
+Open Terminal:
+cd /Users/wael/Downloads/CollegeCourseRegistration
+npm start
+Then open http://localhost:3000/ in the browser.
+If it is already running, just open that address. Ctrl+C stops the app.
+
+FIRST SETUP ON ANOTHER COMPUTER
+Install Node.js and MySQL. In the extracted project folder run npm ci.
+Use .env.example with your own local MySQL connection, then npm run db:setup.
+Alternatively, npm run local:setup creates a separate local MySQL instance;
+npm run local:start starts that instance and the app. See README.md for ports.
+
+TESTS
+npm test                   (7 backend-validation scenarios)
+npm run test:integration   (12 isolated MySQL workflow scenarios)
+npm run test:browser       (9 actual Chrome browser checks)
+npm run check              (JavaScript syntax checks)
+Integration/browser tests need local MySQL credentials and create their own
+temporary databases. Chrome is required for browser checks and PDF generation.
+
+BEFORE CANVAS SUBMISSION
+1. Record/upload the demonstration and obtain a link the professor can view.
+2. Confirm the database-class team ID. Web_App_Assignment.pdf page 3, Section 6,
+   item 4 requires the report filename teamXY.pdf, where XY is that ID.
+3. Put teamId and demoUrl in docs/submission.json. Keep the two authors' names.
+4. Run npm run report. It generates team<ID>.pdf and updates the README demo
+   link. Without an ID it keeps the filename report.pdf and marks it pending.
+5. Submit the source/SQL files, required PDF, and demo link as instructed.
+
+The source ZIP contains configuration templates, not your password or MySQL
+data directory. The RISE-EDU archive and original class design remain unchanged.
+No live GitHub repository was connected; review this folder and upload/commit
+the source through your existing repository when ready.
