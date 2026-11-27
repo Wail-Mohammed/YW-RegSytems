@@ -1,18 +1,25 @@
 {
-  "date": "2026-11-27T04:09:12.055Z",
+  "date": "2026-11-27T05:17:23.791Z",
+  "framework": "Angular 22.0.8",
   "browser": "Chrome/158.0.8127.38",
   "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36",
-  "passed": 9,
+  "passed": 15,
   "results": [
-    "Desktop Chrome loads MySQL-backed offerings and instructor filter",
-    "Form search and JOIN-backed section roster work",
-    "Student INSERT and UPDATE including major persist through page reload and SQL SELECT",
-    "Required browser validation and Cancel prevent unintended INSERT",
-    "A second table supports persisted browser INSERT and targeted UPDATE",
-    "A duplicate-key violation produces visible form feedback",
-    "Registrations, holds, waitlists, and GROUP BY report render without errors",
-    "A refresh failure after saving produces a visible and truthful warning",
-    "390px viewport remains usable; this is emulation, not a physical phone test"
+    "Angular 22 boots the desktop workspace with typed API data and instructor filtering",
+    "Angular search form and JOIN-backed section roster work",
+    "Skip-to-content preserves the active Angular view and moves keyboard focus",
+    "Reactive student INSERT/UPDATE, including major, persists through reload and SQL SELECT",
+    "Angular reactive validation and Cancel prevent unintended INSERT",
+    "A second table supports persisted Angular INSERT and targeted UPDATE",
+    "Duplicate-key feedback is visible and preserves entered reactive-form values",
+    "Prerequisite form displays the backend cycle rejection",
+    "Section forms preserve course/instructor/term references and save capacity changes",
+    "Status-dependent grade controls and final-grade clearing match the SQL rules",
+    "Waitlist promotion and removal operate through Angular confirmation dialogs",
+    "Hold clearing persists with the original hold identity",
+    "JOIN-backed views and the SQL GROUP BY report render in Angular",
+    "A saved write followed by refresh failure produces a visible, truthful warning",
+    "390px emulation supports forms, Cancel, navigation, and internally scrolling tables; no physical phone claimed"
   ],
   "physicalPhoneTested": false
 }

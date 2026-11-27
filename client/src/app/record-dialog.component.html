@@ -1,0 +1,42 @@
+<dialog #nativeDialog id="app-dialog" aria-labelledby="dialog-title" (cancel)="cancel($event)">
+  <form id="dialog-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="dialog-header"><div><p class="eyebrow">Campus Register</p><h2 id="dialog-title">{{ spec.title }}</h2></div><button class="icon-button" id="dialog-close" type="button" aria-label="Close dialog" [disabled]="saving" (click)="cancel()">×</button></div>
+    <div class="dialog-body" id="dialog-body">
+      @if (spec.info) { <div class="notice plain-description">{{ spec.info }}</div> }
+      @if (spec.detailKind) {
+        @if (spec.details?.length) {
+          <div class="table-wrap"><table class="dialog-table"><thead><tr><th>{{ spec.detailKind === 'roster' ? 'Student' : 'Course' }}</th><th>Term</th><th>Status</th><th>Grade</th><th>Actions</th></tr></thead><tbody>
+          @for (row of spec.details; track row.registration_id) {
+            <tr><td><strong>{{ spec.detailKind === 'roster' ? row.student_name : row.course_code }}</strong><span class="cell-sub">{{ spec.detailKind === 'roster' ? row.email : row.title + ' · ' + row.section_number }}</span></td><td>{{ row.term_name }} {{ row.year }}</td><td>{{ row.status }}</td><td>{{ row.final_grade || '—' }}</td><td><button type="button" class="button button-small button-secondary" data-action="edit-context-registration" (click)="editRegistration.emit(row)">Edit</button></td></tr>
+          }
+          </tbody></table></div>
+        } @else { <p class="result-info">No registration records found.</p> }
+      }
+      @if (spec.prerequisites) {
+        @if (spec.prerequisites.length) {
+          <div class="table-wrap"><table class="dialog-table"><thead><tr><th>Required course</th><th>Action</th></tr></thead><tbody>
+          @for (link of spec.prerequisites; track link.prerequisite_id) { <tr><td>{{ link.prerequisite_code }}</td><td><button type="button" class="button button-small button-secondary" [disabled]="saving" (click)="removePrerequisite.emit(link)">Remove</button></td></tr> }
+          </tbody></table></div>
+        } @else { <p class="dialog-title-sub">No direct prerequisites.</p> }
+      }
+      <div class="form-grid">
+        @for (field of spec.fields || []; track field.name) {
+          <div class="form-field" [class.wide]="field.wide">
+            <label [for]="'field-' + field.name">{{ field.label }} @if (required(field)) { <span class="required" aria-hidden="true">*</span> }</label>
+            @if (field.type === 'select') {
+              <select [id]="'field-' + field.name" [formControlName]="field.name" [attr.required]="required(field) ? '' : null">
+                @for (option of field.options || []; track option.value) { <option [value]="option.value">{{ option.label }}</option> }
+              </select>
+            } @else {
+              <input [id]="'field-' + field.name" [type]="field.type || 'text'" [formControlName]="field.name" [attr.maxlength]="field.maxLength || null" [attr.min]="field.min ?? null" [attr.max]="field.max ?? null" [attr.step]="field.type === 'number' ? 1 : null" [attr.required]="required(field) ? '' : null" [placeholder]="field.placeholder || ''">
+            }
+            @if (invalid(field.name)) { <span class="form-validation">Enter a valid {{ field.label.toLowerCase() }}.</span> }
+          </div>
+        }
+      </div>
+    </div>
+    <p id="form-error" class="form-error" role="alert" [hidden]="!error">{{ error }}</p>
+    @if (attempted && form.invalid) { <p class="form-error" role="alert">Check the required fields and allowed values.</p> }
+    <div class="dialog-footer"><button class="button button-secondary" id="dialog-cancel" type="button" [disabled]="saving" (click)="cancel()">{{ spec.save ? 'Cancel' : 'Close' }}</button>@if (spec.save) { <button class="button button-primary" id="dialog-submit" type="submit" [disabled]="saving">{{ saving ? 'Saving…' : spec.submitLabel || 'Save changes' }}</button> }</div>
+  </form>
+</dialog>

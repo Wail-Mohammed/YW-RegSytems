@@ -1,29 +1,31 @@
 {
   "status": "passed",
-  "date": "2026-11-27T04:04:59.557673+00:00",
+  "date": "2026-11-27T05:17:23.791Z",
   "operatingSystem": "macOS 26.7 (Apple Silicon)",
-  "browser": "Chrome/158.0.8127.38 (headless; actual Chrome browser engine)",
+  "browser": "Chrome/158.0.8127.38 (headless; actual Chrome engine)",
   "database": "Local MySQL Community Server 26.7.0, InnoDB, separate loopback instance on port 3307",
-  "node": "v18.14.2",
+  "node": "v24.22.3",
+  "framework": "Angular 22.0.8; TypeScript 6.0.3",
   "commands": [
-    "npm ci --ignore-scripts --no-audit --no-fund",
+    "npm ci",
     "npm run local:setup",
     "npm test",
+    "npm run check",
+    "npm run build",
     "npm run test:integration",
-    "npm run test:browser",
-    "npm run check"
+    "npm run test:browser"
   ],
   "results": [
-    "7 validation scenarios passed: names/email/major, missing and invalid inputs, ID types, course credits and lengths, grade-status consistency, search validation.",
-    "12 MySQL integration scenarios passed in a disposable database: ten-table schema and seed, UTC session/API timestamps, SQL filters and JOINs, INSERT/UPDATE of students and courses, direct SQL persistence from a fresh connection, invalid/duplicate/FK errors, database constraints, holds/prerequisites, simultaneous last-seat requests, prerequisite cycles, FIFO promotion/rollback/removal, capacity/reactivation, GROUP BY/dashboard consistency, and non-destructive repeat setup.",
-    "9 actual Chrome browser checks passed: forms/search/roster, student and course INSERT/UPDATE, major persistence after reload, required input/Cancel, visible duplicate-key feedback, all views and summary report, refresh-failure feedback, and a 390px viewport.",
-    "JavaScript syntax checks passed for server, DAO, repository, validation, configuration, frontend and setup/browser/report scripts.",
-    "Screenshots saved in docs/screenshots. All test databases use their own unique names; the 118-registration demonstration seed is retained."
+    "7 backend-validation scenarios passed, including field lengths, email/major, ID types, credits, search, and grade/status consistency.",
+    "12 real MySQL integration scenarios passed: schema/seed and UTC, parameterized filters/JOINs, student/course INSERT and UPDATE with fresh-connection persistence, invalid/duplicate/FK and CHECK failures, holds/prerequisites, simultaneous last-seat requests, cycles, FIFO promotion/rollback/removal, capacity/reactivation, grouped reports, and repeat setup.",
+    "15 Angular/Chrome browser checks passed: search/roster, skip-link focus, student/course INSERT and UPDATE, reload persistence, validation/Cancel, duplicate and cycle feedback, section changes, conditional grades, holds/waitlists, reports, and truthful refresh-failure feedback.",
+    "Production Angular build and strict TypeScript/template checks passed; initial JavaScript/CSS total 280.12 kB (estimated transfer 75.06 kB). JavaScript syntax checks passed.",
+    "390px viewport forms, navigation, Cancel, and overflow checks passed. Screenshots and browser details are in docs/. Disposable test databases leave the demonstration seed intact."
   ],
   "limitations": [
-    "No physical iPhone or Android was tested. The 390px browser viewport is emulation only, and no mobile-device extra credit is claimed.",
-    "The app assumes an authorized local registrar and does not implement production authentication or an action-by-action audit log.",
-    "The database-class team ID and viewable demo-video URL have not been supplied. Record/upload a video no longer than seven minutes, supply the team ID, and regenerate the report with the required filename.",
-    "The RISE-EDU source was supplied as a ZIP, not a connected Git checkout. No live GitHub repository was changed."
-  ]
+    "No physical iPhone or Android was tested. Narrow-viewport emulation is not evidence for the physical-device bonus.",
+    "This local registrar demonstration assumes an authorized operator; production authentication and an action-by-action audit log are outside scope.",
+    "The team ID and viewable demo-video URL are pending. Add them to docs/submission.json, record a video of at most seven minutes, and regenerate the required team<ID>.pdf."
+  ],
+  "physicalPhoneTested": false
 }

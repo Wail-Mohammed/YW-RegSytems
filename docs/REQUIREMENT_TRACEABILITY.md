@@ -1,10 +1,10 @@
 # Database-class requirement → implementation → evidence
 
-The supplied College Course Registration SRS, final ER, and relational schema govern the application. The instructor’s Web_App_Assignment.pdf adds the web, SQL, testing, and submission requirements. RISE-EDU supplies earlier workflow ideas; it does not replace this database model.
+The supplied College Course Registration SRS, final ER, and relational schema govern the application. The instructor’s Web_App_Assignment.pdf adds the web, SQL, testing, and submission requirements.
 
 | Requirement | Implementation |
 |---|---|
-| R01 departments for courses and instructors | NOT NULL department_id foreign keys; course/section joins and department forms/filters |
+| R01 departments for courses and instructors | NOT NULL department_id foreign keys; course/section joins and department selection fields/filters |
 | R02 student id, names, email, major | students table, Student directory, add/edit form, major search; SQL INSERT/UPDATE |
 | R03 instructor details | instructors table and seeded data; section instructor selector/filter |
 | R04 catalog courses | courses table and catalog add/edit form; credits CHECK 1–6 |
@@ -41,6 +41,8 @@ P01–P05 are reflected in keys, uniqueness, allowed grades, dates, and values i
 | Failure cases | missing/invalid values, duplicate email/code/pairs, missing FK, self/cyclic prerequisites, holds, full sections, grade consistency |
 | 3NF and functional dependencies | sql/schema-notes.txt and report.pdf |
 | Repeatable local setup | .env.example, scripts/setup-db.js, schema.sql, seed.sql, npm scripts |
+| Optional frontend framework | Angular standalone components, signals, injected HttpClient, and reactive forms in client/src/app; TypeScript strict/template checks |
+| Optional mobile use | Responsive CSS and 390px emulation checked; actual iPhone/Android demonstration remains pending |
 
 Integration tests create a uniquely named temporary database, not the configured demonstration database. Browser checks likewise use a temporary database. `docs/verification.json` records the actual environment and results. Physical phone testing and a recorded viewable video must not be inferred from automated viewport tests.
 

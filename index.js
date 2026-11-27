@@ -48,7 +48,8 @@ function createApp(dao){
   route('delete','/api/prerequisites',r=>repo.prerequisite(r.query,true));
   route('get','/api/reports/enrollment',r=>repo.enrollmentReport(r.query));
   app.use('/api',(req,res)=>res.status(404).json({error:'That API route was not found.',code:'NOT_FOUND'}));
-  app.use(express.static(path.join(__dirname,'public')));
+  app.use(express.static(path.join(__dirname,'dist/frontend/browser')));
+  app.get('/',(req,res)=>res.status(503).send('The Angular frontend is not built yet. Run npm run build, then reload this page.'));
   app.use((req,res)=>res.status(404).send('Page not found.'));
   app.use((error,req,res,next)=>{
     let status=error.status||500,message=error.message,code=error.code||'SERVER_ERROR';

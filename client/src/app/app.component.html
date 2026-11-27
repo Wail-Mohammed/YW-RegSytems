@@ -1,0 +1,100 @@
+<a class="skip-link" href="#main" (click)="$event.preventDefault(); mainContent.focus()">Skip to content</a>
+<div class="app-shell" id="workspace" [attr.data-view]="view()" [attr.aria-busy]="loading()">
+  <aside class="sidebar">
+    <a class="brand" href="#sections" aria-label="Campus Register home"><span class="brand-mark"><app-icon name="book" /></span><span>Campus<span class="brand-second">Register<span class="brand-period">.</span></span></span></a>
+    <p class="nav-label">WORKSPACE</p>
+    <nav id="navigation" aria-label="Main navigation">
+      @for (item of navigation; track item.id) { <a [href]="'#' + item.id" [attr.data-view]="item.id" class="nav-link" [class.active]="view() === item.id" [attr.aria-current]="view() === item.id ? 'page' : null"><app-icon [name]="item.icon" />{{ item.name }}<span class="nav-arrow">↗</span></a> }
+    </nav>
+    <div class="sidebar-bottom"><div class="sidebar-note"><span class="note-symbol">✳</span><p>Less paperwork.<br>More possibilities.</p><span>YOUR REGISTRATION WORKSPACE</span></div><div class="workspace-user"><div class="avatar">CR</div><div><strong>College registrar</strong><span>Local administration</span></div></div></div>
+  </aside>
+  <div class="main-shell">
+    <header class="topbar"><div class="breadcrumb"><span>Registrar workspace</span><span>/</span><strong id="breadcrumb-view">{{ pageInfo().name }}</strong></div><span id="connection-state" class="connection" [class.connected]="connected()" [class.disconnected]="!connected()"><span class="connection-dot"></span>{{ connected() ? 'MySQL connected' : 'Connection unavailable' }}</span></header>
+    <main #mainContent id="main" tabindex="-1">
+      <section class="page-heading"><div><p class="eyebrow">{{ selectedTerm() }}</p><h1 id="page-title">{{ pageInfo().name }}</h1><p>{{ pageInfo().description }}</p></div><div class="heading-actions">@if (pageInfo().action) { <button type="button" class="button button-primary" [attr.data-action]="actionId()" (click)="newRecord()"><app-icon name="plus" />{{ pageInfo().action }}</button> }</div></section>
+      <div id="page-content" aria-live="polite">
+        @if (loading()) { <div class="loading-state"><span class="spinner"></span><p>Loading records…</p></div> }
+        @else if (error()) { <div class="panel error-state"><app-icon name="info" /><h3>The workspace is unavailable</h3><p>{{ error() }}</p><button class="button button-primary" type="button" (click)="initialize()">Try again</button></div> }
+        @else {
+          @if (view() === 'sections') {
+            @if (stats(); as currentStats) {
+              <div class="stats-grid">
+                <div class="stat-card"><div class="stat-top"><span>Course sections</span><span class="stat-icon"><app-icon name="grid" /></span></div><p class="stat-value">{{ currentStats.sections }}</p><p class="stat-note">Offerings in the selected term</p></div>
+                <div class="stat-card"><div class="stat-top"><span>Occupied seats</span><span class="stat-icon"><app-icon name="users" /></span></div><p class="stat-value">{{ currentStats.occupied_seats }}</p><p class="stat-note">Active and completed registrations</p></div>
+                <div class="stat-card"><div class="stat-top"><span>On the waitlist</span><span class="stat-icon"><app-icon name="clock" /></span></div><p class="stat-value">{{ currentStats.waitlisted }}</p><p class="stat-note">Students awaiting a seat</p></div>
+                <div class="stat-card"><div class="stat-top"><span>Active holds</span><span class="stat-icon"><app-icon name="shield" /></span></div><p class="stat-value">{{ currentStats.active_holds }}</p><p class="stat-note">College-wide student holds</p></div>
+              </div>
+            }
+            <div class="feature-panel"><div><h2>A place for every possibility.</h2><p>Find a section, review its roster, and help students take their next step.</p></div><div class="feature-art" aria-hidden="true"><span></span><span></span><span></span></div></div>
+          }
+          @if (view() === 'waitlists') { <div class="notice">Join only a full section. Promotion checks queue order, available seats, holds, and prerequisites again. Remove an entry when a student leaves the queue.</div> }
+          @if (view() === 'reports') { <div class="notice">This report uses SQL GROUP BY to count registrations and calculate seat availability. Sections with no registrations remain visible.</div> }
+          <section class="panel">
+            <div class="panel-heading"><div><h2>{{ panelTitle() }}</h2><p>{{ view() === 'students' ? 'Search by name, email, major, or student number.' : 'Browse and maintain the records stored in MySQL.' }}</p></div><span class="count-label">{{ rows().length }} {{ rows().length === 1 ? 'result' : 'results' }}</span></div>
+            <form id="filters" class="filters" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+              @if (view() !== 'reports' && view() !== 'waitlists') { <div class="filter-field search-field"><label for="filter-q">Search</label><div class="search-input-wrap"><app-icon name="search" /><input id="filter-q" type="search" formControlName="q" maxlength="100" placeholder="Search records…"></div></div> }
+              @if (view() === 'sections' || view() === 'registrations' || view() === 'reports') { <div class="filter-field"><label for="filter-term_id">Academic term</label><select id="filter-term_id" formControlName="term_id"><option value="">All terms</option>@for (term of lookups().terms; track term.term_id) { <option [value]="term.term_id">{{ term.name }} {{ term.year }}</option> }</select></div> }
+              @if (view() === 'sections' || view() === 'courses' || view() === 'reports') { <div class="filter-field"><label for="filter-department_id">Department</label><select id="filter-department_id" formControlName="department_id"><option value="">All departments</option>@for (department of lookups().departments; track department.department_id) { <option [value]="department.department_id">{{ department.name }}</option> }</select></div> }
+              @if (view() === 'sections') {
+                <div class="filter-field"><label for="filter-instructor_id">Instructor</label><select id="filter-instructor_id" formControlName="instructor_id"><option value="">All instructors</option>@for (instructor of lookups().instructors; track instructor.instructor_id) { <option [value]="instructor.instructor_id">{{ instructor.first_name }} {{ instructor.last_name }}</option> }</select></div>
+                <div class="filter-field"><label for="filter-availability">Availability</label><select id="filter-availability" formControlName="availability"><option value="">All sections</option><option value="open">Open</option><option value="full">Full</option></select></div>
+              }
+              @if (view() === 'registrations') { <div class="filter-field"><label for="filter-status">Status</label><select id="filter-status" formControlName="status"><option value="">All statuses</option>@for (status of statuses; track status) { <option [value]="status">{{ label(status) }}</option> }</select></div> }
+              @if (view() === 'holds') { <div class="filter-field"><label for="filter-active">Hold status</label><select id="filter-active" formControlName="active"><option value="">All holds</option><option value="true">Active</option><option value="false">Cleared</option></select></div> }
+              @if (view() === 'waitlists') { <div class="filter-field search-field"><label for="filter-section_id">Course section</label><select id="filter-section_id" formControlName="section_id"><option value="">All sections</option>@for (section of lookups().sections; track section.section_id) { <option [value]="section.section_id">{{ section.course_code }} · {{ section.section_number }} · {{ section.term_name }} {{ section.year }}</option> }</select></div> }
+              <button class="button button-primary" type="submit"><app-icon name="search" />Search</button><button class="button button-subtle" type="button" data-action="reset-filters" (click)="resetFilters()">Reset</button>
+            </form>
+            @if (rows().length === 0) { <div class="empty-state"><h3>No results yet</h3><p>Try changing the search or filters.</p></div> }
+            @else {
+              <div class="table-wrap" role="region" tabindex="0" [attr.aria-label]="panelTitle()">
+                @switch (view()) {
+                  @case ('sections') {
+                    <table><thead><tr><th>Course &amp; section</th><th>Schedule</th><th>Instructor</th><th>Seats</th><th>Availability</th><th>Actions</th></tr></thead><tbody>
+                    @for (section of sections(); track section.section_id) {
+                      <tr><td><div class="course-cell"><span class="course-icon"><app-icon name="book" /></span><div><span class="course-code">{{ section.course_code }} · {{ section.section_number }}</span><span class="cell-main">{{ section.title }}</span></div></div><span class="cell-sub">{{ section.department_name }} · {{ section.credits }} credits</span></td><td><span class="cell-main">{{ section.meeting_time }}</span><span class="cell-sub">{{ section.location }} · {{ section.term_name }} {{ section.year }}</span></td><td>{{ section.instructor_name }}</td><td><div class="seats"><div class="seat-numbers"><strong>{{ section.occupied_seats }}</strong> / {{ section.capacity }}</div><div class="seat-track"><div class="seat-fill" [class.full]="section.available_seats === 0" [style.width.%]="seatPercentage(section)"></div></div></div></td><td><span class="pill" [class.pill-green]="section.available_seats > 0" [class.pill-orange]="section.available_seats === 0">{{ section.available_seats > 0 ? section.available_seats + ' open' : 'Full' }}</span>@if (section.waitlist_count > 0) { <span class="cell-sub">{{ section.waitlist_count }} waitlisted</span> }</td><td><div class="action-group"><button class="button button-small button-secondary" data-action="roster" [attr.data-id]="section.section_id" (click)="roster(section)">Roster</button><button class="button button-small button-primary" [attr.data-action]="section.available_seats > 0 ? 'enroll-section' : 'waitlist-section'" [attr.data-id]="section.section_id" (click)="enrollmentDialog(section.section_id, section.available_seats === 0)">{{ section.available_seats > 0 ? 'Enroll' : 'Waitlist' }}</button><button class="icon-button" [attr.data-id]="section.section_id" data-action="edit-section" aria-label="Edit section" (click)="sectionDialog(section)"><app-icon name="edit" /></button></div></td></tr>
+                    }
+                    </tbody></table>
+                  }
+                  @case ('students') {
+                    <table><thead><tr><th>Student</th><th>Email</th><th>Major</th><th>Enrolled</th><th>Holds</th><th>Actions</th></tr></thead><tbody>
+                    @for (student of students(); track student.student_id) { <tr><td><div class="row-detail"><span class="person-avatar">{{ student.first_name[0] }}{{ student.last_name[0] }}</span><div><span class="cell-main">{{ student.first_name }} {{ student.last_name }}</span><span class="cell-sub">Student #{{ student.student_id }}</span></div></div></td><td>{{ student.email }}</td><td>{{ student.major || 'Undeclared' }}</td><td>{{ student.enrollment_count || 0 }}</td><td><span class="pill" [class.pill-red]="student.active_holds" [class.pill-green]="!student.active_holds">{{ student.active_holds ? student.active_holds + ' active' : 'Clear' }}</span></td><td><div class="action-group"><button class="button button-small button-secondary" data-action="schedule" [attr.data-id]="student.student_id" (click)="schedule(student)">Schedule</button><button class="icon-button" data-action="edit-student" [attr.data-id]="student.student_id" aria-label="Edit student" (click)="studentDialog(student)"><app-icon name="edit" /></button></div></td></tr> }
+                    </tbody></table>
+                  }
+                  @case ('courses') {
+                    <table><thead><tr><th>Course</th><th>Department</th><th>Credits</th><th>Prerequisites</th><th>Actions</th></tr></thead><tbody>
+                    @for (course of courses(); track course.course_id) { <tr><td><span class="course-code">{{ course.course_code }}</span><span class="cell-main">{{ course.title }}</span></td><td>{{ course.department_name }}</td><td>{{ course.credits }}</td><td>{{ course.prerequisite_codes || 'None' }}</td><td><div class="action-group"><button class="button button-small button-secondary" data-action="prerequisites" [attr.data-id]="course.course_id" (click)="prerequisites(course)">Prerequisites</button><button class="icon-button" data-action="edit-course" [attr.data-id]="course.course_id" aria-label="Edit course" (click)="courseDialog(course)"><app-icon name="edit" /></button></div></td></tr> }
+                    </tbody></table>
+                  }
+                  @case ('registrations') {
+                    <table><thead><tr><th>Student</th><th>Course</th><th>Term</th><th>Status</th><th>Grade</th><th>Actions</th></tr></thead><tbody>
+                    @for (registration of registrations(); track registration.registration_id) { <tr><td><span class="cell-main">{{ registration.student_name }}</span><span class="cell-sub">Student #{{ registration.student_id }}</span></td><td><span class="course-code">{{ registration.course_code }} · {{ registration.section_number }}</span><span class="cell-main">{{ registration.title }}</span></td><td>{{ registration.term_name }} {{ registration.year }}</td><td><span [class]="'pill pill-' + pillClass(registration.status)">{{ label(registration.status) }}</span></td><td>{{ registration.final_grade || '—' }}</td><td><button class="icon-button" data-action="edit-registration" [attr.data-id]="registration.registration_id" aria-label="Update registration or grade" (click)="registrationDialog(registration)"><app-icon name="edit" /></button></td></tr> }
+                    </tbody></table>
+                  }
+                  @case ('holds') {
+                    <table><thead><tr><th>Student</th><th>Reason</th><th>Placed</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+                    @for (hold of holds(); track hold.hold_id) { <tr><td><span class="cell-main">{{ hold.student_name }}</span><span class="cell-sub">Student #{{ hold.student_id }}</span></td><td style="white-space:normal;max-width:260px">{{ hold.reason }}</td><td>{{ formatDate(hold.placed_at) }}</td><td><span class="pill" [class.pill-red]="!hold.cleared_at" [class.pill-gray]="hold.cleared_at">{{ hold.cleared_at ? 'Cleared' : 'Active' }}</span>@if (hold.cleared_at) { <span class="cell-sub">{{ formatDate(hold.cleared_at) }}</span> }</td><td><button class="button button-small button-secondary" [attr.data-action]="hold.cleared_at ? 'reactivate-hold' : 'clear-hold'" [attr.data-id]="hold.hold_id" (click)="setHold(hold)">{{ hold.cleared_at ? 'Reactivate' : 'Clear hold' }}</button></td></tr> }
+                    </tbody></table>
+                  }
+                  @case ('waitlists') {
+                    <table><thead><tr><th>Position</th><th>Student</th><th>Section</th><th>Joined</th><th>Actions</th></tr></thead><tbody>
+                    @for (entry of waitlists(); track entry.student_id + ':' + entry.section_id) { <tr><td><strong>#{{ entry.position }}</strong></td><td><span class="cell-main">{{ entry.student_name }}</span><span class="cell-sub">Student #{{ entry.student_id }}</span></td><td><span class="course-code">{{ entry.course_code }} · {{ entry.section_number }}</span><span class="cell-main">{{ entry.title }}</span><span class="cell-sub">{{ entry.term_name }} {{ entry.year }}</span></td><td>{{ formatDate(entry.joined_at) }}</td><td><div class="action-group"><button class="button button-small button-primary" data-action="promote" [attr.data-id]="entry.student_id + ':' + entry.section_id" (click)="promote(entry)">Promote</button><button class="button button-small button-secondary" data-action="remove-waitlist" [attr.data-id]="entry.student_id + ':' + entry.section_id" (click)="removeWaitlist(entry)">Remove</button></div></td></tr> }
+                    </tbody></table>
+                  }
+                  @case ('reports') {
+                    <table><thead><tr><th>Section</th><th>Term</th><th>Enrolled</th><th>Completed</th><th>Occupied / capacity</th><th>Available</th><th>Waitlist</th><th>Fill</th></tr></thead><tbody>
+                    @for (row of reports(); track row.section_id) { <tr><td><span class="course-code">{{ row.course_code }} · {{ row.section_number }}</span><span class="cell-main">{{ row.title }}</span><span class="cell-sub">{{ row.department_name }}</span></td><td>{{ row.term_name }} {{ row.year }}</td><td>{{ row.enrolled_count }}</td><td>{{ row.completed_count }}</td><td>{{ row.occupied_seats }} / {{ row.capacity }}</td><td>{{ row.available_seats }}</td><td>{{ row.waitlist_count }}</td><td>{{ row.fill_percentage }}%</td></tr> }
+                    </tbody></table>
+                  }
+                }
+              </div>
+            }
+            <div class="panel-footer"><span>Showing {{ rows().length }} records · Results from MySQL</span><span>Campus Register</span></div>
+          </section>
+        }
+      </div>
+      <footer class="page-footer"><span>Campus Register · Built for a smoother semester</span><span>College Course Registration System</span></footer>
+    </main>
+  </div>
+</div>
+@if (dialog(); as spec) { <app-record-dialog [spec]="spec" [saving]="saving()" [error]="dialogError()" (submitted)="saveDialog($event)" (cancelled)="closeDialog()" (editRegistration)="registrationDialog($event)" (removePrerequisite)="removePrerequisite($event)" /> }
+<div class="toast-region" id="toasts" aria-live="polite" aria-atomic="true">@for (toast of toasts(); track toast.id) { <div class="toast" [class.error]="toast.error"><app-icon [name]="toast.error ? 'info' : 'tick'" /><span>{{ toast.message }}</span></div> }</div>

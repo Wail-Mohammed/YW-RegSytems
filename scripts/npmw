@@ -1,0 +1,13 @@
+#!/bin/sh
+# Prefer a compatible Node already on PATH; Wail's separate runtime is a fallback.
+if command -v node >/dev/null 2>&1 && node -e 'const [a,b,c]=process.versions.node.split(".").map(Number);process.exit((a===22&&(b>22||(b===22&&c>=3)))||(a===24&&b>=15)||a===26?0:1)' 2>/dev/null; then
+  exec npm "$@"
+fi
+project_node="$HOME/.local/share/yw-regsytems/tools/node-current/bin"
+if [ -x "$project_node/node" ]; then
+  PATH="$project_node:$PATH"
+  export PATH
+  exec "$project_node/npm" "$@"
+fi
+printf '%s\n' 'Install Node.js 24.15 or newer in the 24.x series, then run npm normally. See README.md.' >&2
+exit 1

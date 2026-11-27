@@ -1,0 +1,35 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": { "analytics": false },
+  "projects": {
+    "campus-register": {
+      "projectType": "application",
+      "root": "client",
+      "sourceRoot": "client/src",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "outputPath": "dist/frontend",
+            "index": "client/src/index.html",
+            "browser": "client/src/main.ts",
+            "tsConfig": "client/tsconfig.app.json",
+            "assets": [{ "glob": "**/*", "input": "client/public" }],
+            "styles": ["client/src/styles.css"]
+          },
+          "configurations": {
+            "production": { "outputHashing": "all", "budgets": [{ "type": "initial", "maximumWarning": "750kB", "maximumError": "1MB" }] },
+            "development": { "optimization": false, "sourceMap": true }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": { "development": { "buildTarget": "campus-register:build:development" } },
+          "defaultConfiguration": "development"
+        }
+      }
+    }
+  }
+}

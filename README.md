@@ -1,149 +1,126 @@
-# Campus Register — College Course Registration
+# YW-RegSytems · Campus Register
 
-**Team: YW-RegSytems**
+**Wail Mohammed and Yesenia Ruiz** · Database-class project · Instructor Tian Zhou
 
-**Wail Mohammed and Yesenia Ruiz**
+A local college course-registration web application based on our database-class SRS, ER design, and relational schema. The frontend uses **Angular 22 and TypeScript 6**; the backend uses **Node.js and Express**, with **local MySQL** for persistence and SQL processing.
 
-Enterprise Database Web Application, Instructor Tian Zhou
+[Teammate handoff](docs/TEAM_HANDOFF.md) · [Original project requirements](docs/PROJECT_REQUIREMENTS.md) · [Requirement mapping](docs/REQUIREMENT_TRACEABILITY.md) · [Clarified relationships](docs/RELATIONSHIPS.md) · [Report](report.pdf)
 
-Campus Register turns our college course-registration ER design into a local web application. A registrar can search sections, maintain student and course information, manage registrations and final grades, check rosters and schedules, manage holds and waitlists, and view an enrollment summary. All persistent data is stored in MySQL. Filtering, joins, aggregation, and modifications are SQL operations.
+![Angular course-registration workspace](docs/screenshots/sections-desktop.png)
 
-## Prerequisites
+## Run locally
 
-- Node.js 18 or newer, with `node` and `npm` available in the terminal.
-- MySQL installed locally. Use a MySQL version that enforces `CHECK` constraints (MySQL 8.0.16 or newer).
-- A modern browser. See `docs/verification.json` for the browser and operating system actually tested.
-- Port 3000 available, or a different `PORT` in `.env`.
-
-This is a local registrar demonstration. It does not provide production authentication, separate student accounts, or a full audit log.
-
-## Start with a separate local MySQL instance
-
-If MySQL is installed but you do not have a working server connection/password, the local helper can initialize a separate database instance under the project directory and use port 3307. It does not change an existing MySQL installation's data or credentials.
+Prerequisites: MySQL 8.0.16 or newer, a modern browser, and **Node.js 24.15+ in the 24.x series**. The `.nvmrc` selects Node 24. Angular also supports the compatible Node versions listed in `package.json`; the old Node 18 runtime cannot build this frontend.
 
 ```sh
-cd /path/to/CollegeCourseRegistration
-npm install
-npm run local:setup
-npm run local:start
-```
-
-Follow any paths printed by the helper if your MySQL installation is in a different location. Local database files and credentials are excluded from the submission archive.
-
-## Start with your existing MySQL server
-
-```sh
-cd /path/to/CollegeCourseRegistration
-npm install
+git clone https://github.com/Wail-Mohammed/YW-RegSytems.git
+cd YW-RegSytems
+npm ci
 cp .env.example .env
 ```
 
-Edit `.env` to match your own connection. For example:
-
-```dotenv
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=your-local-password
-DB_NAME=college_registration
-PORT=3000
-```
-
-Then run:
+Edit `.env` with your own MySQL host, port, user, password, and database name. Then:
 
 ```sh
 npm run db:setup
 npm start
 ```
 
-`node index.js` also starts the application. Open **http://localhost:3000/**, or the URL using your chosen `PORT`.
+Open **http://localhost:3000/**. `npm start` builds Angular and starts Express, which serves the compiled frontend and `/api` from the same local origin. Change `PORT` in `.env` if 3000 is in use. Configuration defaults to loopback access.
 
-`db:setup` creates the configured database and tables and loads the sample data into an empty database. It does not drop an existing database. Use a new database name if you need a fresh demonstration dataset. The setup account must have permission to create the database/tables; a pre-created database can be used with a suitably privileged local account.
+`db:setup` creates the configured database, ten tables, and sample records in an empty database. It preserves a complete existing database and does not reseed it. The setup account needs appropriate CREATE permissions. `sql/schema.sql` and `sql/seed.sql` also work from MySQL Workbench with your chosen database selected.
 
-Do not commit or submit `.env`, local MySQL data, or passwords. Submit `.env.example` so another person can supply their own configuration.
+### Separate demonstration MySQL instance
 
-## Application tasks
+On a computer with MySQL installed, these helpers can initialize a separate, user-owned instance on port 3307, without changing the system MySQL data or password:
 
-- **Sections:** filter the course offerings by term, department, instructor, or keyword; view section details and rosters.
-- **Students:** search and add students including their major, edit the selected student's information, and view registration history/schedules.
-- **Courses:** maintain catalog information and prerequisite links.
-- **Registrations:** add a registration, change its status, and enter or correct a completed grade.
-- **Holds:** place a hold and clear an existing hold.
-- **Waitlists:** join a full section's queue, promote its first student when eligible and a seat becomes available, or remove an active entry.
-- **Reports:** view enrollment totals calculated by a SQL `GROUP BY` report.
+```sh
+npm run local:setup
+npm run local:start
+```
 
-Forms include a cancel action. Browser validation is supplemented by server-side validation, parameterized values, and MySQL constraints. A rejected change should show an error and leave the stored data unchanged.
+Set `MYSQLD` to the mysqld executable if it is not in a standard location. Set `LOCAL_DB_PORT` before the first setup if 3307 is occupied. The helper preserves an existing `.env` instead of silently replacing your configuration. Stop the app with Ctrl+C; `npm run local:stop` stops only the helper instance.
 
-## Database design and rules
+On Wail's existing computer, `./scripts/npmw start` selects the separately installed compatible Node runtime. Teammates with Node 24 installed can use ordinary `npm` commands.
 
-The ten tables are `departments`, `students`, `instructors`, `terms`, `courses`, `sections`, `registrations`, `course_prerequisites`, `waitlist_entries`, and `student_holds`. See `sql/schema.sql`, `docs/er-diagram.svg`, `docs/er-diagram.mmd`, and the PDF report for keys, constraints, functional dependencies, and the 3NF explanation.
+For an older project database that lacks `students.major`, back it up and apply `sql/migrations/001_student_major.sql` once. Fresh databases already include that field.
 
-- An `ENROLLED` or `COMPLETED` registration occupies a seat. `DROPPED` and `WITHDRAWN` release seats.
-- A completed registration must have one of the supported final grades; the other statuses must not have a final grade.
-- Only F fails a prerequisite in this project's stated rules. A direct prerequisite must have a completed passing registration before entering `ENROLLED` status.
-- Active holds prevent new enrollment. Subsequent holds do not remove an existing registration.
-- A section cannot exceed capacity, and capacity cannot be reduced below its occupied seat count.
-- A student can waitlist only a full section where the student has no seat. Queue order is joining time, then student ID. Promotion rechecks eligibility and uses a transaction.
-- Each student–section pair has at most one registration; a retake uses a different section. Each student–section pair has at most one active waitlist row.
-- Prerequisites cannot refer to the same course or form a cycle.
+## Features
 
-Primary/foreign keys, unique keys, non-null constraints, and checks enforce local row integrity. Transactions and row locks coordinate rules that depend on multiple records. Routine application actions should use the browser/API rather than bypassing these checks with direct SQL edits.
+- **Sections:** SQL-backed keyword, term, department, instructor, and availability filters; section add/edit forms and joined rosters.
+- **Students:** search names, email, ID, or major; add/edit records and view joined registration history.
+- **Course catalog:** add/edit courses and manage direct prerequisite links with cycle rejection.
+- **Registrations:** enroll students, update status, and enter or correct final grades. Grade controls follow the selected status.
+- **Holds:** place, clear, or reactivate a student hold.
+- **Waitlists:** join a full section, promote the first queued student after rechecking eligibility, or remove an active queue entry.
+- **Reports:** SQL `GROUP BY` counts and conditional aggregation for enrollment and seat availability.
 
-## Tests and persistence
+Forms use Angular reactive validation, labeled fields, Cancel controls, visible success/error feedback, and backend validation. Values are bound to MySQL prepared statements. Filtering, joins, counts, and modifications remain SQL operations; Angular displays the results.
+
+## Framework and architecture
+
+```text
+client/src/app/           Angular components, typed models, HttpClient service
+client/src/styles.css     Responsive interface styles
+index.js                  Express API routes, error handling, Angular static files
+Repository.js             SQL queries, enrollment rules, and transactions
+DAO.js                    mysql2 pool, UTC sessions, and transaction handling
+validation.js             Backend input validation
+sql/                      Schema, seed, integrity notes, and optional migration
+docs/                     ER sources, report data, screenshots, and handoff guide
+test/                     Backend-validation and real MySQL integration tests
+scripts/                  Setup, browser checks, build/report helpers
+```
+
+Angular is used for the actual interface, not just included as a library: standalone components render the screens, typed `HttpClient` requests call the API, signals update the view, and reactive forms manage field validation and status-dependent grade controls. Express remains the JavaScript backend; this version does not use Java, Play, or Spring Boot. See [the framework explanation](docs/FRAMEWORK_AND_MOBILE.md).
+
+For frontend development, run `npm run start:api` in one terminal and `npm run frontend:dev` in another. Angular's development server proxies `/api` to Express on port 3000. The standard submission startup remains `npm start` on port 3000.
+
+## Alignment with our class design
+
+The same ten relations remain: departments, students, instructors, terms, courses, sections, registrations, course_prerequisites, waitlist_entries, and student_holds. Student major is retained as an optional single text value. No student–department or multi-university relationship is invented.
+
+The revised ER diagram uses consistent Crow's Foot endpoints. Every child references exactly one parent; a parent may have zero or many children. Both roles of the recursive prerequisite relationship are labeled. The report documents plural SQL names, the readable unique course_code, and the surrogate registration_id; the original unique student–section pair remains enforced.
+
+The implementation follows the stated passing-grade, seat-occupancy, hold, retake, and queue rules. ENROLLED and COMPLETED occupy seats; DROPPED and WITHDRAWN do not. New enrollment checks holds and passing direct prerequisites. Section-row locks prevent overcapacity; queue promotion is atomic. Prerequisite links cannot self-reference or form cycles. Completed historical results are permitted under P06.
+
+This is a local registrar demonstration. It assumes an authorized operator, retains the latest registration status, and does not claim production login controls or a complete action audit log.
+
+## Tests and observed results
 
 ```sh
 npm test
+npm run check
+npm run build
 npm run test:integration
 npm run test:browser
 ```
 
-Database/browser verification details and limitations are recorded in `docs/verification.json` and summarized in the PDF report. Integration tests require a local MySQL connection; use only the documented test setup and a separate test database. Do not use a database containing your own records for test fixtures.
+Integration and browser checks create uniquely named disposable databases and require a local MySQL account with CREATE/DROP DATABASE permission. They do not reset your demonstration database. Chrome is needed for browser checks; set `CHROME_BIN` if its executable is not in a standard location. Build Angular before running the browser checks.
 
-For a manual persistence check, insert or update a record in the interface, note its ID, reload the page, and search for that same record. A matching `SELECT` in MySQL Workbench can also confirm the stored value. The demonstration must show actual persisted modifications rather than only success notifications.
+Observed environment, results, and limits are recorded in [verification.json](docs/verification.json) and [browser-results.json](docs/browser-results.json). Browser tests exercise the real Angular build, persisted inserts/updates, failed inputs, grades, prerequisites, holds, waitlists, reports, Cancel, and a narrow viewport. The 390px viewport is emulation; it is not a physical iPhone or Android test.
 
-## Report and submission
+## Report and Canvas submission
 
-- `report.pdf`: report draft; when a team ID is provided, the generator names it `teamXY.pdf` as required.
-- `docs/er-diagram.mmd`: editable ER diagram source.
-- `docs/er-diagram.svg`: diagram suitable for viewing without Mermaid tooling.
-- `sql/schema.sql`: schema creation with constraints.
-- `sql/seed.sql`: sample data.
-- `docs/feature-queries.sql`: representative SQL for required features.
-- `docs/DEMO_SCRIPT.txt`: a demonstration plan lasting about 6 minutes 30 seconds.
-- `docs/submission.json`: team ID, authors, and demo-video URL used by the report generator.
-- `docs/verification.json`: actual test environment, results, and limitations.
+**Demo video:** pending a viewable link. Record/upload a demonstration no longer than seven minutes and put its URL in `docs/submission.json`.
 
-**Demo video:** not recorded/linked yet. Before submitting, record a video no longer than seven minutes, make it viewable by the instructor, and enter its URL in `docs/submission.json` and here. Also set the team ID so the final report has the required name. The application and report do not invent a video link.
-
-To rebuild the report (Python 3 and Google Chrome installed; set CHROME_BIN if needed):
+The professor asks for application source, SQL schema/sample data, README, a PDF report named `teamXY.pdf` using the team ID, and the demo link. Confirm whether your class has an assigned ID. The team name is **YW-RegSytems**; no separate assigned ID has been supplied.
 
 ```sh
 npm run report
 ```
 
-The PDF report must contain the same viewable demo link as the README. Check the final filename and remove draft-only files from your Canvas selection.
+The report generator needs Python 3 and Chrome. It reads the team metadata and actual verification records, rebuilds the diagram and PDF, and updates the README demo link when provided. It generates `report.pdf` while the team ID is unknown and `team<ID>.pdf` once one is supplied. The report marks missing submission details explicitly.
 
-## Credits and references
+Use [DEMO_SCRIPT.txt](docs/DEMO_SCRIPT.txt) to prepare the recording. Physical-phone testing is still required before claiming the optional mobile bonus. The report explains the Angular framework role; extra-credit awards remain the instructor's decision.
 
-- Team's earlier document: *College Course Registration System (SRS, ER design and DB schema)*, Wail Mohammed and Yesenia Ruiz.
-- Instructor's `TodoMySQL` starter: Express server, public HTML/CSS/JavaScript organization, and MySQL DAO/repository pattern. The registration schema, workflows, interface, validation, reports, and documentation were adapted for this project.
-- Node.js: https://nodejs.org/en/docs
-- Express: https://expressjs.com/
-- mysql2: https://sidorares.github.io/node-mysql2/docs
-- MySQL Reference Manual: https://dev.mysql.com/doc/refman/8.4/en/
-- Codex/ChatGPT assistance was used to implement, document, and test the application from the team's design. Review the source and understand each query and workflow before demonstrating it.
+## Sources and credits
 
-No remote website publication is required; the project is designed for local MySQL and a local browser.
+- Wail Mohammed and Yesenia Ruiz, prior *College Course Registration System SRS, ER Design, and Database Schema*; original requirements reproduced in `docs/PROJECT_REQUIREMENTS.md`.
+- Instructor Tian Zhou, `Web_App_Assignment.pdf` and the `TodoMySQL` sample: Express/DAO/repository organization. Angular sources replace the sample's plain public-folder client; the backend pattern remains.
+- [Implementation notes](docs/IMPLEMENTATION_NOTES.md) document the class design, clarified relationships, schema refinements, and application layers.
+- [Angular documentation](https://angular.dev/overview), [version compatibility](https://angular.dev/reference/versions), [reactive forms](https://angular.dev/guide/forms/reactive-forms), [HttpClient](https://angular.dev/guide/http).
+- [Node.js](https://nodejs.org/en/docs), [Express](https://expressjs.com/), [mysql2 prepared statements](https://sidorares.github.io/node-mysql2/docs/examples/queries/prepared-statements), [MySQL constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html).
+- Codex/ChatGPT assistance was used to implement, document, and test the application. The team should review the code, understand the SQL, and verify the final submission before presenting it.
 
-
-## Alignment with this class and the professor’s feedback
-
-The ten-entity database-class SRS and final ER/schema govern this implementation. Read [the requirement mapping](docs/REQUIREMENT_TRACEABILITY.md) and [the explicit relationship constraints](docs/RELATIONSHIPS.md). The revised diagram uses consistent Crow’s Foot notation: each child has exactly one parent, while a parent may have zero or many children. Both prerequisite roles are named. The existing major attribute is retained as one optional student value. Unique pair constraints remain in force.
-
-The RISE-EDU archive is the earlier Java/Swing/CSV enrollment project. Its enrollment, holds, waitlist, schedule, and reporting workflows inform the application; this class requires JavaScript/HTML/CSS and local MySQL. The [adaptation record](docs/RISE_EDU_ADAPTATION.md) explains that scope. The original archive and class design document are not changed.
-
-Integration and browser checks create uniquely named temporary databases and remove only those databases. They require a setup account with CREATE/DROP DATABASE permissions on your local test server. The separate helper instance provides such a local demonstration account. Tests never reset the configured demonstration database. Chrome tests use headless desktop Chrome and a narrow viewport; this is not proof of physical iPhone/Android testing.
-
-For an older project database missing the major column, back it up, then run `sql/migrations/001_student_major.sql` once in MySQL Workbench. A new installation already includes the field. The setup command preserves existing records and will not silently migrate or reseed an older schema.
-
-After using the separate local instance, stop the app with Ctrl+C. Run `npm run local:stop` to stop only the helper’s MySQL instance. If your MySQL binaries are elsewhere, set MYSQLD to the mysqld executable before local:setup. The helper does not install MySQL, change the system server, or modify its password.
+The earlier tested plain-JavaScript frontend is preserved in Git history under `baseline-vanilla-frontend`. The current application uses Angular. Generated builds, dependencies, `.env`, local MySQL data, and logs are excluded from Git.
