@@ -78,7 +78,7 @@ npm run test:integration
 npm run test:browser
 ```
 
-Recorded testing used macOS 26.7 and Chrome 158: seven validation scenarios, twelve MySQL integration scenarios, and sixteen browser checks passed. Details are in [verification.json](docs/verification.json). Integration/browser tests use disposable databases and require CREATE/DROP DATABASE permission. Browser tests require Chrome and a completed Angular build.
+Recorded testing used macOS 26.7 and Chrome 158: seven validation scenarios, twelve MySQL integration scenarios, and seventeen browser checks passed. Details are in [verification.json](docs/verification.json). Integration/browser tests use disposable databases and require CREATE/DROP DATABASE permission. Browser tests require Chrome and a completed Angular build.
 
 The narrow-screen check used a 390px emulated viewport. A physical iPhone or Android demonstration is still pending.
 

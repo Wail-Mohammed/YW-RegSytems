@@ -44,6 +44,16 @@ async function main(){
     assert.equal(await browser.evaluate('document.querySelectorAll("#page-content tbody tr").length'),26);
     assert.ok(await browser.evaluate('!!document.querySelector("#filter-instructor_id")'));
     await browser.screenshot(path.join(capture,'sections-desktop.png'));record('Angular 22 boots the desktop workspace with typed API data and instructor filtering');
+    for(const width of [1920,2560]){
+      await browser.send('Emulation.setDeviceMetricsOverride',{width,height:width===1920?1080:1440,deviceScaleFactor:1,mobile:false});
+      const layout=await browser.evaluate("(()=>{const panel=document.querySelector('#page-content .panel').getBoundingClientRect(),wrap=document.querySelector('.results-pane > .table-wrap').getBoundingClientRect(),actions=document.querySelector('.results-pane tbody tr td:last-child .action-group').getBoundingClientRect();return{width:innerWidth,panelLeft:panel.left,panelRight:panel.right,pageWidth:document.documentElement.scrollWidth,actionsRight:actions.right,resultsRight:wrap.right};})()");
+      assert.equal(layout.width,width);
+      assert.ok(layout.panelLeft<=40 && layout.panelRight>=width-40,'The results panel should use the available desktop width.');
+      assert.ok(layout.pageWidth<=width,'The desktop page should not overflow horizontally.');
+      assert.ok(layout.actionsRight<=layout.resultsRight+1,'Section actions should be visible without horizontal scrolling on a wide display.');
+      if(width===1920)await browser.screenshot(path.join(capture,'sections-desktop.png'));
+    }
+    record('1920px and 2560px layouts fill the screen and keep section actions visible');
     await browser.send('Emulation.setDeviceMetricsOverride',{width:320,height:240,deviceScaleFactor:1,mobile:false});
     await browser.evaluate("(()=>{const link=document.querySelector('#navigation a[data-view=\"reports\"]');link.focus();link.scrollIntoView({block:'nearest'});})()");
     await browser.wait("(()=>{const link=document.querySelector('#navigation a[data-view=\"reports\"]'),r=link.getBoundingClientRect(),n=link.closest('nav').getBoundingClientRect();return document.activeElement===link && r.top>=Math.max(0,n.top)-1 && r.bottom<=Math.min(innerHeight,n.bottom)+1;})()");
