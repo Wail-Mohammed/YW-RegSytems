@@ -1,11 +1,12 @@
 {
-  "date": "2026-11-28T00:18:13.358Z",
+  "date": "2026-11-28T00:22:27.520Z",
   "framework": "Angular 22.0.8",
   "browser": "Chrome/158.0.8127.38",
   "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36",
-  "passed": 15,
+  "passed": 16,
   "results": [
     "Angular 22 boots the desktop workspace with typed API data and instructor filtering",
+    "Navigation stays keyboard-accessible and reaches Reports in a short window",
     "Angular search form and JOIN-backed section roster work",
     "Skip-to-content preserves the active Angular view and moves keyboard focus",
     "Reactive student INSERT/UPDATE, including major, persists through reload and SQL SELECT",

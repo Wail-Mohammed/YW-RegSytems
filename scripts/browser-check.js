@@ -42,6 +42,13 @@ async function main(){
     assert.equal(await browser.evaluate('document.querySelectorAll("#page-content tbody tr").length'),26);
     assert.ok(await browser.evaluate('!!document.querySelector("#filter-instructor_id")'));
     await browser.screenshot(path.join(capture,'sections-desktop.png'));record('Angular 22 boots the desktop workspace with typed API data and instructor filtering');
+    await browser.send('Emulation.setDeviceMetricsOverride',{width:320,height:240,deviceScaleFactor:1,mobile:false});
+    await browser.evaluate("(()=>{const link=document.querySelector('#navigation a[data-view=\"reports\"]');link.focus();link.scrollIntoView({block:'nearest'});})()");
+    await browser.wait("(()=>{const link=document.querySelector('#navigation a[data-view=\"reports\"]'),r=link.getBoundingClientRect(),n=link.closest('nav').getBoundingClientRect();return document.activeElement===link && r.top>=Math.max(0,n.top)-1 && r.bottom<=Math.min(innerHeight,n.bottom)+1;})()");
+    await click('#navigation a[data-view="reports"]');await browser.wait(loaded('reports'));
+    record('Navigation stays keyboard-accessible and reaches Reports in a short window');
+    await browser.send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
+    await view('sections');await browser.evaluate('window.scrollTo(0,0)');
     await browser.evaluate('const q=document.querySelector("#filter-q");q.value="Database";q.dispatchEvent(new Event("input",{bubbles:true}));document.querySelector("#filters").requestSubmit()');
     await browser.wait('document.querySelectorAll("#page-content tbody tr").length===1 && document.querySelector("#page-content tbody").innerText.includes("CS 301")');
     await open('[data-action="roster"]');
