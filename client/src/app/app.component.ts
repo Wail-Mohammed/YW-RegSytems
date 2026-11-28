@@ -17,13 +17,13 @@ export class AppComponent implements OnInit {
     { id: 'holds', name: 'Student holds', icon: 'shield' }, { id: 'waitlists', name: 'Waitlists', icon: 'clock' }, { id: 'reports', name: 'Reports', icon: 'chart' }
   ];
   readonly meta: Record<View, { name: string; description: string; action?: string }> = {
-    sections: { name: 'Sections', description: 'Explore course offerings and keep every seat accounted for.', action: 'New section' },
-    students: { name: 'Students', description: 'Keep student details, majors, and registration records up to date.', action: 'Add student' },
-    courses: { name: 'Course catalog', description: 'Maintain catalog courses and their prerequisite requirements.', action: 'Add course' },
-    registrations: { name: 'Registrations', description: 'Manage enrollments, update statuses, and record final grades.', action: 'Enroll a student' },
-    holds: { name: 'Student holds', description: 'Place or clear holds that affect new enrollments.', action: 'Place a hold' },
-    waitlists: { name: 'Waitlists', description: 'Manage section queues and offer available seats in order.', action: 'Join a waitlist' },
-    reports: { name: 'Enrollment reports', description: 'Review registrations, available seats, and course demand.' }
+    sections: { name: 'Sections', description: 'Search course sections and view rosters or available seats.', action: 'New section' },
+    students: { name: 'Students', description: 'Add or update student details and view registration history.', action: 'Add student' },
+    courses: { name: 'Course catalog', description: 'Add courses, update catalog details, and manage prerequisites.', action: 'Add course' },
+    registrations: { name: 'Registrations', description: 'Enroll students, change registration status, and enter grades.', action: 'Enroll a student' },
+    holds: { name: 'Student holds', description: 'View, place, or clear student enrollment holds.', action: 'Place a hold' },
+    waitlists: { name: 'Waitlists', description: 'View waiting students and promote or remove queue entries.', action: 'Join a waitlist' },
+    reports: { name: 'Enrollment reports', description: 'View enrollment totals and available seats by section.' }
   };
   readonly view = signal<View>(this.viewFromHash());
   readonly pageInfo = computed(() => this.meta[this.view()]);
@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
   }
   applyFilters(): void { this.appliedFilters.set(this.filterForm.getRawValue()); void this.loadView(); }
   resetFilters(): void { this.filterForm.reset(Object.fromEntries(FILTERS.map(key => [key, '']))); this.appliedFilters.set({}); void this.loadView(); }
-  selectedTerm(): string { const term = this.lookups().terms.find(t => String(t.term_id) === this.appliedFilters()['term_id']); return term ? `${term.name.toUpperCase()} ${term.year}` : 'THE ACADEMIC WORKSPACE'; }
+  selectedTerm(): string { const term = this.lookups().terms.find(t => String(t.term_id) === this.appliedFilters()['term_id']); return term ? `${term.name} ${term.year}` : 'All academic terms'; }
   sections(): Section[] { return this.rows() as Section[]; }
   students(): Student[] { return this.rows() as Student[]; }
   courses(): Course[] { return this.rows() as Course[]; }

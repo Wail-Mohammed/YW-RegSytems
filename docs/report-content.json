@@ -430,7 +430,7 @@
         },
         {
           "kind": "small",
-          "text": "Codex/ChatGPT assistance was used for implementation, documentation, and testing based on the team’s design. The application’s registration workflows, constraints, queries, and presentation were adapted to that design. The team should review the source and understand the SQL before presenting it."
+          "text": "Codex was used for implementation assistance."
         }
       ]
     }
