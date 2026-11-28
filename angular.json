@@ -3,7 +3,7 @@
   "version": 1,
   "cli": { "analytics": false },
   "projects": {
-    "campus-register": {
+    "academic-registration-portal": {
       "projectType": "application",
       "root": "client",
       "sourceRoot": "client/src",
@@ -26,7 +26,7 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "configurations": { "development": { "buildTarget": "campus-register:build:development" } },
+          "configurations": { "development": { "buildTarget": "academic-registration-portal:build:development" } },
           "defaultConfiguration": "development"
         }
       }

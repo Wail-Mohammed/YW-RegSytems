@@ -57,7 +57,7 @@ export class AppComponent implements OnInit {
   private async refreshLookups(): Promise<void> { this.lookups.set(await this.api.get<Lookups>('/lookups')); this.connected.set(true); }
   async loadView(): Promise<void> {
     const generation = ++this.generation, view = this.view();
-    this.loading.set(true); this.error.set(''); document.title = `Campus Register · ${this.meta[view].name}`;
+    this.loading.set(true); this.error.set(''); document.title = `Academic Registration Portal · ${this.meta[view].name}`;
     try {
       const filters = this.appliedFilters();
       const [rows, dashboard] = await Promise.all([

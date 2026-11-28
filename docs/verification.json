@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "date": "2026-11-28T00:35:08.305Z",
+  "date": "2026-11-28T00:40:38.755Z",
   "operatingSystem": "macOS 26.7 (Apple Silicon)",
   "browser": "Chrome/158.0.8127.38 (headless; actual Chrome engine)",
   "database": "Local MySQL Community Server 26.7.0, InnoDB, separate loopback instance on port 3307",
@@ -18,8 +18,8 @@
   "results": [
     "7 backend-validation scenarios passed, including field lengths, email/major, ID types, credits, search, and grade/status consistency.",
     "12 real MySQL integration scenarios passed: schema/seed and UTC, parameterized filters/JOINs, student/course INSERT and UPDATE with fresh-connection persistence, invalid/duplicate/FK and CHECK failures, holds/prerequisites, simultaneous last-seat requests, cycles, FIFO promotion/rollback/removal, capacity/reactivation, grouped reports, and repeat setup.",
-    "16 Angular/Chrome browser checks passed: short-window navigation, search/roster, skip-link focus, student/course INSERT and UPDATE, reload persistence, validation/Cancel, duplicate and cycle feedback, section changes, conditional grades, holds/waitlists, reports, and truthful refresh-failure feedback.",
-    "Production Angular build and strict TypeScript/template checks passed; initial JavaScript/CSS total 274.55 kB (estimated transfer 73.55 kB). JavaScript syntax checks passed.",
+    "16 Angular/Chrome browser checks passed: updated branding/status removal, short-window navigation, search/roster, skip-link focus, student/course INSERT and UPDATE, reload persistence, validation/Cancel, duplicate and cycle feedback, section changes, conditional grades, holds/waitlists, reports, and truthful refresh-failure feedback.",
+    "Production Angular build and strict TypeScript/template checks passed; initial JavaScript/CSS total 274.10 kB (estimated transfer 73.47 kB). JavaScript syntax checks passed.",
     "Traditional registration layout: 390px viewport forms, navigation, Cancel, and overflow checks passed. Screenshots and browser details are in docs/. Disposable test databases leave the demonstration seed intact.",
     "App frontend and database health verified through HTTP on localhost:8002 using Node 24.22.3."
   ],

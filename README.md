@@ -1,12 +1,14 @@
-# YW-RegSytems — Campus Register
+# Academic Registration Portal
 
 **Wail Mohammed and Yesenia Ruiz**
 
-Database class · Instructor Tian Zhou
+Team: YW-RegSytems · Database class · Instructor Tian Zhou
 
 This application implements our College Course Registration SRS, ER diagram, and database schema. It lets a registrar manage students, courses, sections, registrations, holds, and waitlists through a browser. Records are stored in local MySQL.
 
 [Report](report.pdf) · [ER diagram](docs/er-diagram.svg) · [Relationship constraints](docs/RELATIONSHIPS.md) · [SQL examples](docs/feature-queries.sql)
+
+[Testing steps](docs/TESTING_GUIDE.md) · [Demo script](docs/DEMO_SCRIPT.txt)
 
 ## Setup
 

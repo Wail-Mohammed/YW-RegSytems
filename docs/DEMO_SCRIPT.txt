@@ -1,76 +1,112 @@
-Team: YW-RegSytems
+ACADEMIC REGISTRATION PORTAL — DEMO SCRIPT
+Wail Mohammed and Yesenia Ruiz | Team: YW-RegSytems
+Target: 6 minutes 10 seconds. Maximum allowed: 7 minutes.
 
-CAMPUS REGISTER — DEMONSTRATION PLAN (target 6:30; maximum 7:00)
-Wail Mohammed and Yesenia Ruiz
+BEFORE RECORDING
+1. Start the app and open http://localhost:8002/ in Chrome.
+2. Open MySQL Workbench using the app's local database connection.
+   Keep passwords and .env off screen. Prepare the two SELECT queries below.
+3. Use new demo records so existing team data stays unchanged:
+   Student: Taylor Demo, taylor.demo.01@example.edu, Computer Science.
+   Course: DEMO 900, Computer Science, Registration Demo, 3 credits.
+   Update: Registration Demo Updated, 4 credits.
+4. Check that the email/code are unused. If already present, use .02 and
+   DEMO 901 instead, including in your prepared SQL queries.
+5. Keep this script beside the recording window. Practice once with a timer.
 
-Before recording
-1. Start the local database and application using README.md.
-2. Open http://localhost:8002/ in Chrome. Use a seeded, clean database.
-3. Use fictional demo data only. Keep the MySQL password and .env file off screen.
-4. Record the application window and narrate what each operation demonstrates.
-5. Publish the video with access enabled for the instructor. Add its viewable URL
-   to docs/submission.json and the README; regenerate the PDF report.
+0:00–0:25 | INTRODUCTION
+Click/do:
+  Show the application and its name.
+Say:
+  "This is Academic Registration Portal, our college course-registration
+  application. Angular provides the interface, Express handles requests,
+  and local MySQL stores the records. It follows our database-class design."
 
-0:00–0:25 — Purpose and design
-“This is Campus Register, our college course registration application. Angular
-provides the interface; Express serves the API, and local MySQL stores the data.
-Our design separates catalog courses from term-specific sections and connects
-students and sections through registrations.”
+0:25–1:10 | SEARCH AND JOIN
+Click/do:
+  Open Sections. Enter Database in Search. Select Fall 2026 and
+  Computer Science, then click Search. Open the Database Systems Roster.
+  Show its students and registration details, then click Close.
+Say:
+  "These filters run in SQL. The section results combine course, term,
+  department, and instructor information. The roster joins student records
+  with registrations for the selected section."
 
-0:25–1:10 — Search and JOIN query
-Open Sections. Filter by academic term, department, and a course keyword.
-Show the course title, department, instructor, meeting, location, and seats.
-Explain that SQL joins the underlying tables and filters on the server.
-Open a section roster or a student schedule to demonstrate another useful JOIN.
+1:10–2:00 | INSERT A STUDENT
+Click/do:
+  Students → Add student.
+  Enter Taylor, Demo, taylor.demo.01@example.edu, and Computer Science.
+  Click Add student. Search for the exact email and show the saved row.
+Say:
+  "I am adding a new student. The form and server validate the values.
+  MySQL creates the student ID and saves the record."
 
-1:10–2:05 — INSERT and persistence
-Open Students and add a fictional student, for example Taylor Demo, with a
-unique email such as taylor.demo.2026@example.edu. Show the success message.
-Refresh or search for the new student and show that the record is still present.
-Also show the same record in MySQL Workbench with a SELECT query, if available.
+2:00–3:00 | INSERT AND UPDATE A SECOND TABLE
+Click/do:
+  Course catalog → Add course.
+  Enter DEMO 900, Computer Science, Registration Demo, and 3 credits.
+  Click Add course. Search for DEMO 900.
+  Click its pencil icon. Change the title to Registration Demo Updated
+  and credits to 4. Click Save course.
+Say:
+  "This inserts a course in a second table. I then select that course and
+  update its title and credits. The UPDATE targets its primary key."
 
-2:05–2:55 — UPDATE and a second table
-Edit the new student's name or email. Show only the selected record changes.
-Create or edit a course/section, or create a registration for the new student,
-so the insert/update demonstration covers at least two distinct tables.
-Refresh and show that the modified record remains saved.
+3:00–3:40 | VALIDATION AND CANCEL
+Click/do:
+  Students → Add student. Submit the empty form to show required fields.
+  Enter valid names and the same demo email. Submit to show the duplicate
+  error. Click Cancel and return to the saved student row.
+Say:
+  "Missing required values are rejected. A duplicate email is also rejected
+  by the database's unique constraint, and the app shows a clear message.
+  Cancel closes an unfinished form without saving another record."
 
-2:55–3:45 — Registration rules
-Show a successful enrollment into a section with seats and no prerequisites.
-Show a full section and the waitlist. Explain that a transaction checks capacity,
-active holds, and completed prerequisite courses before allocating a seat.
-If time allows, release a seat and promote the first queued student after the
-system rechecks eligibility.
+3:40–4:20 | GROUPED REPORT
+Click/do:
+  Open Reports, select Fall 2026, and click Search.
+  Show the enrolled, completed, occupied, and available-seat columns.
+Say:
+  "This report uses GROUP BY and aggregate functions in SQL. It helps the
+  registrar compare enrollment and available seats by section. Completed
+  and enrolled registrations occupy seats under our stated design rules."
 
-3:45–4:30 — GROUP BY summary report
-Open Reports and filter the term. Show the grouped enrollment summary.
-Explain that COUNT/SUM with GROUP BY counts registrations and occupied seats;
-the database performs the aggregation rather than browser JavaScript.
+4:20–5:40 | SHOW PERSISTENCE IN THE BROWSER AND MYSQL
+Click/do:
+  Reload the browser. Find the student and updated course again.
+  Switch to MySQL Workbench. Execute the two prepared SELECT statements.
+  Show the result rows, especially the updated course title and 4 credits.
+Say:
+  "The records remain after reloading. These direct MySQL queries show the
+  same saved values, including the course update. The changes are stored
+  in the database rather than only in the browser."
 
-4:30–5:35 — Invalid input and database constraints
-Try a student email already in use and show the clear duplicate message.
-Show a missing required field or invalid value. Cancel an unfinished form.
-Try enrolling a student with an active hold or a missing prerequisite.
-Show that rejected changes leave the stored data unchanged.
+Prepared read-only queries:
 
-5:35–6:10 — Confirm persistence
-Reload the browser. Find the student and the second modified record again.
-Show a SQL SELECT in MySQL Workbench for those exact IDs, if available.
-Do not rely only on a temporary success notification as persistence evidence.
+  SELECT student_id, first_name, last_name, email, major
+  FROM college_registration.students
+  WHERE email = 'taylor.demo.01@example.edu';
 
-6:10–6:30 — Conclusion
-Show the source package, SQL schema/sample data, and PDF report filenames.
-State the OS and browser actually used. Explain that the project runs locally.
+  SELECT course_id, course_code, title, credits
+  FROM college_registration.courses
+  WHERE course_code = 'DEMO 900';
 
-Recording checks
-- Search, INSERT, UPDATE, JOIN, GROUP BY report, and a rejected operation appear.
-- Modifications cover at least two tables and persistence is visible after reload.
-- Video length is no more than seven minutes.
-- The instructor can open the submitted link without requesting access.
-- Do not claim physical-device testing unless it was actually performed.
+5:40–6:10 | DESIGN AND CLOSING
+Click/do:
+  Briefly show the updated ER diagram and report. State the OS and browser
+  actually used for this recording.
+Say:
+  "Our schema separates catalog courses from term-specific sections.
+  Registrations connect students and sections. The revised diagram uses
+  consistent relationship constraints. The report includes the schema,
+  functional dependencies, 3NF explanation, SQL queries, and testing."
 
-CLASS DESIGN NOTE
-Explain that the diagram now uses one Crow's Foot notation consistently.
-Each registration references exactly one student and one section; each student
-and section can have zero or many registrations. Both course-prerequisite roles
-are named. Mention the same ten entities and the retained major attribute.
+FINAL CHECK
+- Search, INSERT, UPDATE, JOIN, GROUP BY, and a rejected operation appear.
+- Student and course modifications cover at least two different tables.
+- Saved values are visible after reload and in MySQL Workbench.
+- Recording is shorter than seven minutes and the instructor can view it.
+- Add the video URL and class team ID to docs/submission.json. Regenerate
+  the report as team<ID>.pdf and check the README video link.
+- Claim mobile credit only after demonstrating a real iPhone/Android and
+  stating its device/browser. A resized desktop window is not that test.

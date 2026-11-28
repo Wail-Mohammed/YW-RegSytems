@@ -3,10 +3,10 @@ import json
 root=Path(__file__).resolve().parents[1]
 def b(kind,text):return {'kind':kind,'text':text}
 pages=[]
-pages.append({'title':'Campus Register','subtitle':'College Course Registration — Enterprise Database Web Application','blocks':[
+pages.append({'title':'Academic Registration Portal','subtitle':'College Course Registration — Enterprise Database Web Application','blocks':[
  b('body','Wail Mohammed and Yesenia Ruiz\nInstructor: Tian Zhou'),
  b('h','Application summary'),
- b('body','Campus Register implements the college course-registration database from our previous SRS and ER assignment. A registrar uses a browser to search course sections, maintain students and courses, enroll students, update statuses and grades, manage holds and waitlists, and review rosters, schedules, and enrollment totals. Angular 22 and TypeScript 6 provide the interface, compiled to JavaScript, HTML, and CSS. Node.js and Express handle requests; local MySQL stores the records.'),
+ b('body','Academic Registration Portal implements the college course-registration database from our previous SRS and ER assignment. A registrar uses a browser to search course sections, maintain students and courses, enroll students, update statuses and grades, manage holds and waitlists, and review rosters, schedules, and enrollment totals. Angular 22 and TypeScript 6 provide the interface, compiled to JavaScript, HTML, and CSS. Node.js and Express handle requests; local MySQL stores the records.'),
  b('h','Connection to our earlier design'),
  b('body','The same ten relations remain: department, student, instructor, term, course, section, registration, course prerequisite, waitlist entry, and student hold. The implementation keeps catalog courses separate from term-specific sections and uses association tables for registrations, prerequisites, and queues. It implements the stated meanings of seat occupancy, passing grades, active holds, and latest registration status.'),
  b('h','Implementation refinements'),
@@ -113,7 +113,7 @@ pages.append({'title':'Reproduction and references','blocks':[
  b('body','Install Node.js 24.15+ in the 24.x series and local MySQL. Run npm ci, configure .env from .env.example, and run npm run db:setup. npm start builds Angular and starts Express at http://localhost:8002/. Running node index.js directly requires a prior npm run build. The local:setup/local:start helpers can provide a separate user-owned MySQL instance. See README.md; schema.sql and seed.sql recreate the demonstration data in an empty database.'),
  b('h','Demo video'),
  b('demo',''),
- b('body','The recording must be no longer than seven minutes and demonstrate a search, INSERT, UPDATE, JOIN, grouped report, a rejected operation, and persisted modifications. The timed plan is docs/DEMO_SCRIPT.txt.'),
+ b('body','The recording must be no longer than seven minutes and demonstrate a search, INSERT, UPDATE, JOIN, grouped report, a rejected operation, and persisted modifications. The timed plan is docs/DEMO_SCRIPT.txt; step-by-step manual checks are in docs/TESTING_GUIDE.md.'),
  b('h','References and assistance'),
  b('small','[1] Team’s previous College Course Registration SRS, ER diagram, and relational schema, Wail Mohammed and Yesenia Ruiz.\n[2] Instructor Tian Zhou, Web_App_Assignment.pdf and TodoMySQL starter: original Express/public-folder organization and MySQL DAO/repository pattern. Angular replaces the plain client.\n[3] Node.js documentation: https://nodejs.org/en/docs\n[4] Express documentation: https://expressjs.com/\n[5] mysql2 documentation: https://sidorares.github.io/node-mysql2/docs\n[6] MySQL Reference Manual: https://dev.mysql.com/doc/refman/8.4/en/create-table-check-constraints.html\n[7] Angular documentation: https://angular.dev/overview\n[8] Angular version compatibility: https://angular.dev/reference/versions\n[9] Angular reactive forms: https://angular.dev/guide/forms/reactive-forms\n[10] Angular HttpClient: https://angular.dev/guide/http\n[11] Registration-form and course-search screenshots supplied as visual references.'),
  b('small','Codex was used for implementation assistance.')

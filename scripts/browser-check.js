@@ -39,6 +39,8 @@ async function main(){
     await browser.wait(loaded('sections'));
     const angularVersion=await browser.evaluate('document.querySelector("app-root").getAttribute("ng-version")');
     assert.ok(angularVersion?.startsWith('22.'),'The served frontend must actually bootstrap Angular 22.');
+    assert.equal(await browser.evaluate('document.querySelector(".brand").textContent.trim()'),'Academic Registration Portal');
+    assert.equal(await browser.evaluate('document.querySelector("#connection-state")'),null);
     assert.equal(await browser.evaluate('document.querySelectorAll("#page-content tbody tr").length'),26);
     assert.ok(await browser.evaluate('!!document.querySelector("#filter-instructor_id")'));
     await browser.screenshot(path.join(capture,'sections-desktop.png'));record('Angular 22 boots the desktop workspace with typed API data and instructor filtering');

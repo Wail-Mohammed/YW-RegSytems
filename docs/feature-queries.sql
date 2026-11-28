@@ -1,4 +1,4 @@
--- Campus Register: representative prepared statements for the required features.
+-- Academic Registration Portal: representative prepared statements for the required features.
 -- '?' is a bound value supplied through mysql2, not string concatenation.
 
 -- 1. Search sections and display joined catalog, department, term, and instructor.

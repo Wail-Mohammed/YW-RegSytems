@@ -1,6 +1,6 @@
 <dialog #nativeDialog id="app-dialog" [class.entry-dialog]="(spec.fields?.length || 0) > 0" aria-labelledby="dialog-title" (cancel)="cancel($event)">
   <form id="dialog-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    <div class="dialog-header"><div><p class="eyebrow">Campus Register</p><h2 id="dialog-title">{{ spec.title }}</h2></div><button class="icon-button" id="dialog-close" type="button" aria-label="Close dialog" [disabled]="saving" (click)="cancel()">×</button></div>
+    <div class="dialog-header"><div><p class="eyebrow">Academic Registration Portal</p><h2 id="dialog-title">{{ spec.title }}</h2></div><button class="icon-button" id="dialog-close" type="button" aria-label="Close dialog" [disabled]="saving" (click)="cancel()">×</button></div>
     <div class="dialog-body" id="dialog-body">
       @if (spec.info) { <div class="notice plain-description">{{ spec.info }}</div> }
       @if (spec.detailKind) {

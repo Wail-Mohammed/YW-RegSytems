@@ -1,7 +1,7 @@
 {
   "pages": [
     {
-      "title": "Campus Register",
+      "title": "Academic Registration Portal",
       "subtitle": "College Course Registration — Enterprise Database Web Application",
       "blocks": [
         {
@@ -14,7 +14,7 @@
         },
         {
           "kind": "body",
-          "text": "Campus Register implements the college course-registration database from our previous SRS and ER assignment. A registrar uses a browser to search course sections, maintain students and courses, enroll students, update statuses and grades, manage holds and waitlists, and review rosters, schedules, and enrollment totals. Angular 22 and TypeScript 6 provide the interface, compiled to JavaScript, HTML, and CSS. Node.js and Express handle requests; local MySQL stores the records."
+          "text": "Academic Registration Portal implements the college course-registration database from our previous SRS and ER assignment. A registrar uses a browser to search course sections, maintain students and courses, enroll students, update statuses and grades, manage holds and waitlists, and review rosters, schedules, and enrollment totals. Angular 22 and TypeScript 6 provide the interface, compiled to JavaScript, HTML, and CSS. Node.js and Express handle requests; local MySQL stores the records."
         },
         {
           "kind": "h",
@@ -418,7 +418,7 @@
         },
         {
           "kind": "body",
-          "text": "The recording must be no longer than seven minutes and demonstrate a search, INSERT, UPDATE, JOIN, grouped report, a rejected operation, and persisted modifications. The timed plan is docs/DEMO_SCRIPT.txt."
+          "text": "The recording must be no longer than seven minutes and demonstrate a search, INSERT, UPDATE, JOIN, grouped report, a rejected operation, and persisted modifications. The timed plan is docs/DEMO_SCRIPT.txt; step-by-step manual checks are in docs/TESTING_GUIDE.md."
         },
         {
           "kind": "h",

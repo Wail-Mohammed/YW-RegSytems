@@ -67,7 +67,7 @@ async function start(){
  const dao=new AppDAO();
  try{await dao.run('SELECT 1 FROM students LIMIT 1');}
  catch(error){console.error(`Database is not ready (${error.code||error.message}). Check .env and run npm run db:setup, or npm run local:setup.`);await dao.close();process.exitCode=1;return;}
- const server=createApp(dao).listen(config.port,config.host,()=>console.log(`Campus Register: http://${config.host}:${config.port}`));
+ const server=createApp(dao).listen(config.port,config.host,()=>console.log(`Academic Registration Portal: http://${config.host}:${config.port}`));
  server.on('error',async e=>{console.error(`Cannot start server: ${e.message}`);await dao.close();process.exitCode=1;});
  const close=()=>server.close(async()=>{await dao.close();process.exit(0);});
  process.once('SIGINT',close);process.once('SIGTERM',close);
