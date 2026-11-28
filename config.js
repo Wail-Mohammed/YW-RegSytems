@@ -26,7 +26,7 @@ const config = {
     timezone: 'Z', dateStrings: true, decimalNumbers: true,
     connectionLimit: 6, waitForConnections: true, enableKeepAlive: true
   },
-  host: process.env.HOST || '127.0.0.1', port: port(process.env.PORT, 3000)
+  host: process.env.HOST || '127.0.0.1', port: port(process.env.PORT, 8002)
 };
 if (!/^[a-zA-Z][a-zA-Z0-9_]{0,63}$/.test(config.database.database)) throw new Error('DB_NAME must start with a letter and contain only letters, numbers, and underscores.');
 module.exports = config;

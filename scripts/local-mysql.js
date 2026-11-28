@@ -66,7 +66,7 @@ async function setup() {
     await connection.query("ALTER USER 'root'@'localhost' IDENTIFIED BY ?",[info.password]);}
   await connection.end();
   const env=path.join(root,'.env');
-  if (!fs.existsSync(env)) fs.writeFileSync(env,`# Generated for the separate local demonstration instance.\nDB_HOST=127.0.0.1\nDB_PORT=${info.port}\nDB_USER=root\nDB_PASSWORD=${info.password}\nDB_NAME=college_registration\nPORT=3000\nHOST=127.0.0.1\n`,{mode:0o600});
+  if (!fs.existsSync(env)) fs.writeFileSync(env,`# Generated for the separate local demonstration instance.\nDB_HOST=127.0.0.1\nDB_PORT=${info.port}\nDB_USER=root\nDB_PASSWORD=${info.password}\nDB_NAME=college_registration\nPORT=8002\nHOST=127.0.0.1\n`,{mode:0o600});
   else {
     const configured=require('../config').database;
     if(configured.port!==info.port || configured.password!==info.password)throw new Error('Existing .env was preserved. Configure it for this local instance or use npm run db:setup with your existing server.');

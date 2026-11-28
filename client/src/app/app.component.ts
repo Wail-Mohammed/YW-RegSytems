@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
     { id: 'holds', name: 'Student holds', icon: 'shield' }, { id: 'waitlists', name: 'Waitlists', icon: 'clock' }, { id: 'reports', name: 'Reports', icon: 'chart' }
   ];
   readonly meta: Record<View, { name: string; description: string; action?: string }> = {
-    sections: { name: 'Sections', description: 'Search course sections and view rosters or available seats.', action: 'New section' },
+    sections: { name: 'Find Course Sections', description: 'Search course sections and view rosters or available seats.', action: 'New section' },
     students: { name: 'Students', description: 'Add or update student details and view registration history.', action: 'Add student' },
     courses: { name: 'Course catalog', description: 'Add courses, update catalog details, and manage prerequisites.', action: 'Add course' },
     registrations: { name: 'Registrations', description: 'Enroll students, change registration status, and enter grades.', action: 'Enroll a student' },

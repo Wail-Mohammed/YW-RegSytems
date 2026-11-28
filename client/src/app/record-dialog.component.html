@@ -1,4 +1,4 @@
-<dialog #nativeDialog id="app-dialog" aria-labelledby="dialog-title" (cancel)="cancel($event)">
+<dialog #nativeDialog id="app-dialog" [class.entry-dialog]="(spec.fields?.length || 0) > 0" aria-labelledby="dialog-title" (cancel)="cancel($event)">
   <form id="dialog-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
     <div class="dialog-header"><div><p class="eyebrow">Campus Register</p><h2 id="dialog-title">{{ spec.title }}</h2></div><button class="icon-button" id="dialog-close" type="button" aria-label="Close dialog" [disabled]="saving" (click)="cancel()">×</button></div>
     <div class="dialog-body" id="dialog-body">
@@ -19,6 +19,7 @@
           </tbody></table></div>
         } @else { <p class="dialog-title-sub">No direct prerequisites.</p> }
       }
+      @if (spec.fields?.length) { <h3 class="form-section-heading">{{ spec.title.toLowerCase().includes('student') ? 'Student information' : spec.title.toLowerCase().includes('course') ? 'Course information' : 'Record details' }}</h3> }
       <div class="form-grid">
         @for (field of spec.fields || []; track field.name) {
           <div class="form-field" [class.wide]="field.wide">

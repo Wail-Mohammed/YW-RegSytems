@@ -26,7 +26,7 @@ npm run db:setup
 npm start
 ```
 
-Open **http://localhost:3000/**. `npm start` builds Angular and starts Express. Change `PORT` in `.env` if 3000 is occupied. Ctrl+C stops the application.
+Open **http://localhost:8002/**. `npm start` builds Angular and starts Express. Change `PORT` in `.env` if 8002 is occupied. Ctrl+C stops the application.
 
 In IntelliJ, open this project folder, select Node 24 as the JavaScript runtime, and run the `start` npm script. The IDE terminal can also run the commands above.
 
@@ -90,6 +90,7 @@ Set the class team ID and demo URL in `docs/submission.json`, then run `npm run 
 
 - Wail Mohammed and Yesenia Ruiz, *College Course Registration System SRS, ER Design, and Database Schema*.
 - Tian Zhou, `Web_App_Assignment.pdf` and the `TodoMySQL` Express/MySQL example.
+- Registration-form and course-search screenshots used as visual references.
 - [Angular](https://angular.dev/overview), [version compatibility](https://angular.dev/reference/versions), [reactive forms](https://angular.dev/guide/forms/reactive-forms), and [HttpClient](https://angular.dev/guide/http).
 - [Node.js](https://nodejs.org/en/docs), [Express](https://expressjs.com/), [mysql2 prepared statements](https://sidorares.github.io/node-mysql2/docs/examples/queries/prepared-statements), and [MySQL constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html).
 

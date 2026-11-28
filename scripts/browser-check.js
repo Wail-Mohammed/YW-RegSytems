@@ -59,6 +59,9 @@ async function main(){
     assert.equal(await browser.evaluate('location.hash'),'#students');
     record('Skip-to-content preserves the active Angular view and moves keyboard focus');
     await open('[data-action="new-student"]');
+    const formBounds=await browser.evaluate("(()=>{const r=document.querySelector('#app-dialog').getBoundingClientRect();return{x:r.x+scrollX,y:r.y+scrollY,width:r.width,height:r.height,scale:1};})()");
+    const formPreview=await browser.send('Page.captureScreenshot',{format:'png',clip:formBounds,captureBeyondViewport:false});
+    fs.writeFileSync(path.join(capture,'student-form.png'),Buffer.from(formPreview.data,'base64'));
     await fill({first_name:'Browser',last_name:'Persistence',email:'browser.persistence@example.edu',major:'Computer Science'});await submit();
     const student=(await dao.run('SELECT * FROM students WHERE email=?',['browser.persistence@example.edu']))[0];assert.ok(student);
     const editStudent=`[data-action="edit-student"][data-id="${student.student_id}"]`;

@@ -5,7 +5,7 @@ Wail Mohammed and Yesenia Ruiz
 
 Before recording
 1. Start the local database and application using README.md.
-2. Open http://localhost:3000/ in Chrome. Use a seeded, clean database.
+2. Open http://localhost:8002/ in Chrome. Use a seeded, clean database.
 3. Use fictional demo data only. Keep the MySQL password and .env file off screen.
 4. Record the application window and narrate what each operation demonstrates.
 5. Publish the video with access enabled for the instructor. Add its viewable URL
